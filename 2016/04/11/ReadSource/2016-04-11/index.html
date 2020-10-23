@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
+    <meta name="referrer" content="origin">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <title>【读源码】系列之(二)MLTransition</title>
+
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css">
+
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css">
+    
+        <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css">
+    
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js"></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    <a id="cover"></a>
+    <div id="header">
+    <div class="header">
+        <div class="vertical">
+            <div class="inner">
+                <h1 class="header-subtitle">【读源码】系列之(二)MLTransition</h1>
+                <div class="header-subinfo">
+                    <p class="article-info-text">
+                        <span>
+                            <i class="iconfont icon-time"></i> 发表时间：2016-04-11
+                        </span>
+                        
+                            <span id="/2016/04/11/ReadSource/2016-04-11/" class="leancloud_visitors" data-flag-title="【读源码】系列之(二)MLTransition">
+                                <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
+                            </span>
+                        
+                        <span>
+                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2016/04/11/ReadSource/2016-04-11/"></span>
+                        </span>  
+                    </p>                 
+                </div>
+            </div>
+        </div>
+        <canvas id="articleHeaderCanvas"></canvas>
+    </div>
+</div>
+    <div id="container">
+    <div id="content">
+        <div id="article">
+    <div class="toc"></div>
+    <div class="article-body">
+        <p>感谢@molon 开源这些优秀的代码<br>源码地址:<a target="_blank" rel="noopener" href="https://github.com/molon/MLTransition">https://github.com/molon/MLTransition</a></p>
+<p>最好把源码下下来，方便接下来的阅读<br>我整理了源码目录的定义<br>####① 代码架构</p>
+<p><img src="~/MLTransition.png"></p>
+<p>####② 一句话启用<br>MLTransition 使用方式叫做一句话启用，在AppDelegate加入这句代码，这句代码是</p>
+<pre>+ (void)validatePanBackWithMLTransitionGestureRecognizerType:(MLTransitionGestureRecognizerType)type;</pre>
+<p>后面是个枚举类型，看下枚举类型是怎么定义的</p>
+<pre>typedef enum {
+    MLTransitionGestureRecognizerTypePan, //拖动模式
+    MLTransitionGestureRecognizerTypeScreenEdgePan, //边界拖动模式
+} MLTransitionGestureRecognizerType;</pre>
+<p>边界拖动模式就限制了target &gt;7.0 ，从后面的代码也可以知道拖动模式也要版本7.0+<br>查看validatePanBackWithMLTransitionGestureRecognizerType 的实现方法</p>
+<pre>static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        __MLTransitionGestureRecognizerType = type;
+        __MLTransition_Swizzle([UINavigationController class],@selector(viewDidLoad),@selector(__MLTransition_Hook_ViewDidLoad));
+    });
+</pre>
+<p>这里比较重要的就是__MLTransition_Swizzle hook 方法，作者用了runtime 来交换了实现方法，__MLTransition_Swizzle 是个C方法，它的的参数类型如下</p>
+<pre>//c 方法 参数1 要交换的类， 参数2 旧的(或系统)方法 ，参数3 自定义方法</pre>
+
+<p>####③ hook 方法</p>
+<pre>//静态就交换静态，实例方法就交换实例方法
+void __MLTransition_Swizzle(Class c, SEL origSEL, SEL newSEL)
+{
+    //获取实例方法
+    Method origMethod = class_getInstanceMethod(c, origSEL);
+    Method newMethod = nil;
+  //若origSEL 不存在 则获取 ，这里传的是系统方法viewDidLoad 所以必然存在 一定会跳转到else
+  if (!origMethod) {
+    //获取静态方法
+    origMethod = class_getClassMethod(c, origSEL);
+    newMethod = class_getClassMethod(c, newSEL);
+  }else{
+    //新方法是__MLTransition_Hook_ViewDidLoad 按理说UINavigationController没有这个方法 是获取不到这个方法的，但是我们newSEL的实现 (类别)
+    newMethod = class_getInstanceMethod(c, newSEL);
+  }
+  //必要性判断
+  if (!origMethod||!newMethod) {
+    return;
+  }
+
+  //自身已经有了就添加不成功，直接交换即可 class_addMethod返回是个bool 值  
+  if(class_addMethod(c, origSEL, method_getImplementation(newMethod), method_getTypeEncoding(newMethod))){
+    //添加成功一般情况是因为，origSEL本身是在c的父类里。这里添加成功了一个继承方法。
+    //四个参数解读（见下文）
+    class_replaceMethod(c, newSEL, method_getImplementation(origMethod), method_getTypeEncoding(origMethod));
+  }else{
+    method_exchangeImplementations(origMethod, newMethod);
+  }
+  //hook 结束后 就要执行hook 方法
+}
+</pre> 
+<p>其中 class_addMethod/class_replaceMethod 的参数说明，method_getImplementation 获取函数指针(地址)，method_getTypeEncoding(newMethod) po 出来的值 “v16@0:8” 是将数据类型编码成char＊（字符串）形式，举例</p>
+<pre>  -(void)hello
+   v16@0:8
+   -(id)hello:(id)x
+   @24@0:8@16
+   -(void)hello:(id)x :(id)e
+   v32@0:8@16@24
+
+   解读：
+   按照文档上的说明，和objc_msgSend的参量顺序
+   A void v
+   A method selector (SEL)  ：
+   An object (whether statically typed or typed id) @
+   进行拆解解读
+   v16（返回类型为空） @0（receiver id类型） :8（SEL标示）
+   v32（返回类型为空） @0（receiver id类型） :8（SEL标示）@16（参量 id类型）@24（参量 id类型）
+   </pre>
+<h4 id="④-newSEL的实现"><a href="#④-newSEL的实现" class="headerlink" title="④ newSEL的实现"></a>④ newSEL的实现</h4><pre>- (void)__MLTransition_Hook_ViewDidLoad
+{
+    [self __MLTransition_Hook_ViewDidLoad];
+    if (!self.__MLTransition_panGestureRecognizer&&[self.interactivePopGestureRecognizer.delegate isKindOfClass:[UIPercentDrivenInteractiveTransition class]]) {
+        UIPanGestureRecognizer *gestureRecognizer = nil;
+\#define kHandleNavigationTransitionKey [@"nTShMTkyGzS2nJquqTyioyElLJ5mnKEco246" __mlDecryptString]
+if (__MLTransitionGestureRecognizerType == MLTransitionGestureRecognizerTypeScreenEdgePan) {
+            gestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self.interactivePopGestureRecognizer.delegate action:NSSelectorFromString(kHandleNavigationTransitionKey)];
+            ((UIScreenEdgePanGestureRecognizer*)gestureRecognizer).edges = UIRectEdgeLeft;//设置左边界滑动
+        }else{
+            gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self.interactivePopGestureRecognizer.delegate action:NSSelectorFromString(kHandleNavigationTransitionKey)];
+        }
+        gestureRecognizer.delegate = self;
+        gestureRecognizer.__MLTransition_NavController = self;
+      self.__MLTransition_panGestureRecognizer = gestureRecognizer;
+        self.interactivePopGestureRecognizer.enabled = NO;
+    }    
+    [self.view addGestureRecognizer:self.__MLTransition_panGestureRecognizer];
+}
+</pre>
+<p>实现部分是最核心的部分，看懂这部分 基本上就知道原理了，其他都是一些优化，<br>注意__MLTransition_Hook_ViewDidLoad方法 的位置，是UINavigationController的类别，这点也是很重要，下面继续看作者的思路，</p>
+<ol>
+<li><p>第一句是这样写的<br>[self __MLTransition_Hook_ViewDidLoad]; 注意，我们交换了方法，这句话看似调用了自己本身，但是其实是调用了origSEL 交换之前的方法,这里就是父类的viewDidLoad。</p>
+</li>
+<li><p>if 判断</p>
+<pre>!self.__MLTransition_panGestureRecognizer&&[self.interactivePopGestureRecognizer.delegate isKindOfClass:[UIPercentDrivenInteractiveTransition class]]</pre> 
+<p>!self.__MLTransition_panGestureRecognizer 这句还好理解，self.interactivePopGestureRecognizer.delegate好像从来没用过；<br>其实确实有是UINavigationController的一个属性，不过是readonly，interactivePopGestureRecognizer它继承自UIPanGestureRecognizer，出现在IOS7以后，是专门处理在屏幕边缘触发的手势类型，并且只有一个属性叫edges，用来设置它的触发边缘（上、下、左、右、全部），打印日志，查看了它的触发target:_UINavigationInteractiveTransition（这是一个私有类，看来是专门用来做导航控制器交互动画的），和action:handleNavigationTransition（这是它的一个私有方法），我们要做的就是新建一个UIPanGestureRecognizer，让它的触发和系统的这个手势相同，这就需要利用runtime获取系统手势的target和action。(不得不佩服作者的天才思路)。 (详细了解戳这里<a target="_blank" rel="noopener" href="http://www.jianshu.com/p/d39f7d22db6c">http://www.jianshu.com/p/d39f7d22db6c</a> )。<br>理解了是什么意思，再来看这个if判断,self.__MLTransition_panGestureRecognizer 未赋值 第一次一定为空，[self.interactivePopGestureRecognizer.delegate isKindOfClass:[UIPercentDrivenInteractiveTransition class]也会成立;<br>注意在iOS7中，如果使用了UINavigationController，那么系统自带的附加了一个从屏幕左边缘开始滑动可以实现pop的手势。但是，如果自定义了navigationItem的leftBarButtonItem，那么这个手势就会失效。(这里并不会有这个问题)。</p>
+</li>
+<li><p>接下来的局部宏定义  <pre>#define kHandleNavigationTransitionKey [@"nTShMTkyGzS2nJquqTyioyElLJ5mnKEco246" __mlDecryptString]</pre><br>最开始我看这句百思不得其解，不知道为什么作者这样写，后来仔细查了资料，才明白作者的天才思路，(1)nTShMTkyGzS2nJquqTyioyElLJ5mnKEco246 之所以这样写是因为 （UIGestureRecognizer 的targets）handleNavigationTransition: 这个是私有api<br>(2)为了避免被拒 所以用 __mlEncryptString 绕了下 并把这个handleNavigationTransition:方法进行base64 编码<br>(3)这里做的就是要做的就是新建一个UIPanGestureRecognizer，让它的触发和系统的这个手势相同，这就需要利用runtime获取系统手势的target和action。<br>(4)这就是NSString 类别所在的原因</p>
+</li>
+<li><p>私有api调用 </p>
+<pre>if (__MLTransitionGestureRecognizerType == MLTransitionGestureRecognizerTypeScreenEdgePan) {
+         gestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self.interactivePopGestureRecognizer.delegate action:NSSelectorFromString(kHandleNavigationTransitionKey)];
+         ((UIScreenEdgePanGestureRecognizer*)gestureRecognizer).edges = UIRectEdgeLeft;//设置左边界滑动
+     }else{
+         gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self.interactivePopGestureRecognizer.delegate action:NSSelectorFromString(kHandleNavigationTransitionKey)];
+     }</pre>
+<p>虽然写了手势，但是其实调用的是私有方法。</p>
+</li>
+<li><p>代理设置，记录导航等</p>
+<pre> gestureRecognizer.delegate = self;
+   //记录手势所在的导航？
+     gestureRecognizer.__MLTransition_NavController = self;self.__MLTransition_panGestureRecognizer = gestureRecognizer;
+     //这个手势识别一定要设置为NO 即不启用
+     self.interactivePopGestureRecognizer.enabled = NO;</pre></li>
+<li><p>最后添加到view ，[self.view addGestureRecognizer:self.__MLTransition_panGestureRecognizer]; 我们创建的手势最后调用的实际是handleNavigationTransition 这个系统的私有方法。</p>
+</li>
+</ol>
+<h4 id="⑤-对手势代理方法的处理"><a href="#⑤-对手势代理方法的处理" class="headerlink" title="⑤ 对手势代理方法的处理"></a>⑤ 对手势代理方法的处理</h4><pre>- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)recognizer
+{
+    UINavigationController *navVC = self;
+  /**
+   *  这时候前面提到的用处甚少的转场协调器(Transition Coordinator)将在这里派上用场。
+   *  该对象可通过 UIViewController 的transitionCoordinator()方法获取，这是 iOS 7 为自定义转场新增的 API，
+   *   该方法只在控制器处于转场过程中才返回一个与当前转场有关的有效对象，其他时候返回 nil
+   *  也就是说正在转场(动画)不执行手势 ,没有子viewcontroller 也不执行拖返手势
+   */
+    if ([navVC.transitionCoordinator isAnimated]||
+        navVC.viewControllers.count < 2) {
+        return NO;
+    }
+    //如果当前view  被禁用 也不执行 (关联对象方式)
+    UIView* view = recognizer.view;
+    if (view.disableMLTransition) {
+        return NO;
+    }
+    CGPoint loc = [recognizer locationInView:view];
+    //获取当前响应的view
+    UIView* subview = [view hitTest:loc withEvent:nil];
+  //检测当前子视图是否忽略拖返
+    UIView *superView = subview;
+    while (superView!=view) {
+
+        if (superView.disableMLTransition) { //这个view忽略了拖返
+            return NO;
+        }
+        superView = superView.superview;
+    }
+
+    //普通拖曳模式，如果开始方向不对即不启用 （边界的话只支持左边界）
+    if (__MLTransitionGestureRecognizerType==MLTransitionGestureRecognizerTypePan){
+        CGPoint velocity = [recognizer velocityInView:navVC.view];
+
+        if(velocity.x<=0) {
+            //NSLog(@"不是右滑的");
+            return NO;
+        }
+
+        CGPoint translation = [recognizer translationInView:navVC.view];
+        translation.x = translation.x==0?0.00001f:translation.x;
+
+      //计算角度
+        CGFloat ratio = (fabs(translation.y)/fabs(translation.x));
+
+        //因为上滑的操作相对会比较频繁，所以角度限制少点 (监控滑动)
+        if ((translation.y>0&&ratio>0.618f)||(translation.y<0&&ratio>0.2f)) {
+            //NSLog(@"右滑角度不在范围内");
+            return NO;
+        }
+    }
+
+    return YES;
+}</pre>
+
+<p>剩余都是作者对这个扩展的一些优化，作者也有注释。</p>
+<p>参考文档：<br><a target="_blank" rel="noopener" href="http://www.cnblogs.com/ioooooos/p/3617213.html">http://www.cnblogs.com/ioooooos/p/3617213.html</a><br><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/d39f7d22db6c">http://www.jianshu.com/p/d39f7d22db6c</a><br><a target="_blank" rel="noopener" href="http://www.cocoachina.com/ios/20150610/12076.html">http://www.cocoachina.com/ios/20150610/12076.html</a></p>
+
+        <p class="suffix-end">__END__</p>
+        <div class="suffix-box">
+            <div class="suffix-box-left">
+                <img src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/sidebar/avatar.jpg" alt="林江仙">
+            </div>
+            <div class="suffix-box-right">
+                <span class="suffix-box-title">文章作者</span>：林江仙
+                <br>
+                <span class="suffix-box-title">文章出处</span>：<a href="/2016/04/11/ReadSource/2016-04-11/" target="_blank">【读源码】系列之(二)MLTransition</a>
+                <br>
+                <span class="suffix-box-title">作者签名</span>：所有伟大的事情都源于梦想，始于微不足道.
+                <br>
+                <span class="suffix-box-title">关于主题</span>：<a href="https://github.com/first19326/Hexo-LiveForCode" target="_blank">Hexo - Live For Code</a>
+                <br>
+                <span class="suffix-box-title">版权声明</span>：文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="BY-NC-SA" target="_blank">BY-NC-SA</a> 许可协议，转载请注明出处
+                <br>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+    <div class="article-footer">
+        
+        
+        <div class="article-prev-next">
+            
+                <a href="/2016/04/14/iOS/2016-04-14/" class="prev-prefix">« </a> 上一篇：    <a href="/2016/04/14/iOS/2016-04-14/" title="发布于 2016-04-14 07:03">iOS 实现QQ消除小红点</a>
+                <br>
+            
+            
+                <a href="/2016/04/10/iOS/2016-04-10/" class="next-prefix">» </a> 下一篇：    <a href="/2016/04/10/iOS/2016-04-10/" title="发布于 2016-04-10 08:55">iOS KVO 数组属性的监听</a>
+            
+        </div>
+    </div>
+    
+    <div class="article-comments">
+        <div class="comments-title">
+            评论列表
+        </div>
+        <div class="comments-content">
+        </div>
+    </div>
+
+</div>
+
+    </div>
+</div>
+    <div id="footer"></div>
+    <div id="sidebar">
+    <div class="menu-wrap" style="display:none;">
+        <nav class="menu">
+            <div class="menu-introduce"> 
+                <div class="introduce-avatar"></div> 
+                <div class="introduce-info"> 
+                    <div class="introduce-user"><span></span></div>        
+                </div> 
+            </div> 
+            <div class="menu-list">
+                <ul></ul> 
+            </div> 
+            <div class="menu-link"></div> 
+        </nav>
+        <button class="menu-button-close"></button>
+        <div class="morph-shape" id="morph-shape" data-morph-open="M-7.312,0H15c0,0,66,113.339,66,399.5C81,664.006,15,800,15,800H-7.312V0z;M-7.312,0H100c0,0,0,113.839,0,400c0,264.506,0,400,0,400H-7.312V0z">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 800" preserveAspectRatio="none">
+                <path d="M-7.312,0H0c0,0,0,113.839,0,400c0,264.506,0,400,0,400h-7.312V0z"/>
+            </svg>
+        </div>
+    </div>
+    <button class="menu-button-open">MENU</button>
+    <div class="menu-cover"></div>
+</div>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js"></script>
+<div class="search-window">
+    <div class="search-content">
+        <div class="search-content-icon">
+            <i class="iconfont icon-search"></i>
+        </div>
+        <div id="search-input" class="search-input"></div>
+    </div>
+
+    <div class="search-scroll">
+        <div class="search-result">
+            <div id="search-stats" class="search-stats"></div>
+            <div id="search-hits"></div>
+            <div id="search-pagination" class="search-pagination"></div>
+        </div>
+    </div>
+
+    <span class="search-close-icon">
+        <i class="iconfont icon-close"></i>
+    </span>
+</div>
+    <div id="tools">
+    <div class="progressbar-top"></div>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js"></script>
+    <meting-js id="3778678" lrcshow="false" server="netease" type="playlist" fixed="true" autoplay="false" loop="all" order="random" preload="auto" volume="0.67" mutex="true"></meting-js>
+    <div class="wrap-right"></div>
+    <div class="loading"></div>
+</div>
+    <script>
+    window.config = {
+        GitHubUserName     : 'first19326',
+        GitHubRepositories : 'Hexo-LiveForCode',
+
+        BlogUser      : '林江仙',
+        BlogAvatar    : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/sidebar/avatar.jpg',
+        BlogStartDate : '2020-01-01',
+
+        WebsiteTitleBlur         : '(◍´꒳`◍) Hi, 林江仙',
+        WebsiteTitleBlurTimeOut  : 500,
+        WebsiteTitleFocus        : '(*´∇｀*) 欢迎回来!',
+        WebsiteTitleFocusTimeOut : 1000,
+        WebsiteFavicon           : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/website/logo.png',
+
+        ProgressBar: {
+            id       : 'topProgressBar',
+            color    : '#77B6FF',
+            height   : '2px',
+            duration : 0.2
+        },
+
+        Loading: {
+            rebound: {
+                tension  : 16,
+                friction : 5
+            },
+            spinner: {
+                id     : 'spinner',
+                radius : 90,
+                sides  : 3,
+                depth  : 4,
+                colors : {
+                    background : '#F0F0F0',
+                    stroke     : '#272633',
+                    base       : '',
+                    child      : '#272633'
+                },
+                alwaysForward : true,
+                restAt        : 0.5,
+                renderBase    : false
+            }
+        },
+
+        HomeHeaderAnimationRendered : true,
+        HomeHeaderAnimation         : {
+            radius      : 15,
+            density     : 0.2,
+            color       : 'rgba(255, 255, 255, .2)',
+            clearOffset : 0.3
+        },
+
+        ArticleHeaderAnimationRendered : false,
+        ArticleHeaderAnimation         : {
+            triW                  : 14,
+            triH                  : 20,
+            neighbours            : [
+                
+                    'side',
+                
+                    'top',
+                
+                    'bottom',
+                
+            ],
+            speedTrailAppear      : 0.1,
+            speedTrailDisappear   : 0.1,
+            speedTriOpen          : 1,
+            trailMaxLength        : 30,
+            trailIntervalCreation : 100,
+            delayBeforeDisappear  : 2,
+            colors                : [
+                
+                    '#96EDA6',
+                
+                    '#5BC6A9',
+                
+                    '#38668C',
+                
+                    '#374D84',
+                
+                    '#BED5CB',
+                
+                    '#62ADC6',
+                
+                    '#8EE5DE',
+                
+                    '#304E7B',
+                
+            ]
+        },
+
+        BackAnimationRendered          : true,
+        IEBrowserBackAnimationRendered : false,
+        BackAnimation                  : {
+            colorSaturation  : '60%',
+            colorBrightness  : '50%',
+            colorAlpha       : 0.5,
+            colorCycleSpeed  : 5,
+            verticalPosition : 'random',
+            horizontalSpeed  : 200,
+            ribbonCount      : 3,
+            strokeSize       : 0,
+            parallaxAmount   : -0.2,
+            animateSections  : true
+        },
+
+        HomeHeaderImage : [
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/home.jpg',
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/home.jpeg',
+            
+        ],
+        HomeBannerText  : '',
+
+        ArticleHeaderImage : [
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/article.jpg',
+            
+        ],
+
+        OtherBannerText  : '',
+
+        MenuList : [
+            
+                {
+                    name   : '首页',
+                    href   : '/',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '标签',
+                    href   : '/tag',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '分类',
+                    href   : '/category',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '归档',
+                    href   : '/archive',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '赞赏',
+                    href   : '/donate',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '关于',
+                    href   : '/about',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '订阅',
+                    href   : '/atom.xml',    
+                    target : '_blank',
+                    class  : ''
+                },
+            
+                {
+                    name   : '搜索',
+                    href   : '',    
+                    target : '',
+                    class  : 'search'
+                },
+            
+                {
+                    name   : '留言板',
+                    href   : '/comment',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '友情链接',
+                    href   : '/friend',    
+                    target : '',
+                    class  : ''
+                },
+            
+        ],
+        MenuLink : [
+            
+                {
+                    icon : 'icon-weibo', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-wechat', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-qq', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-github', 
+                    url  : 'https://github.com/first19326'
+                },
+            
+        ],
+
+        FooterStyle : 2,
+        BottomText  : {
+            icon    : 'like-fill',
+            left    : '人生若只如初见',
+            right   : '何事秋风悲画扇'
+        },
+        ThemeInfo   : true,
+
+        ConsoleList : [
+            
+                [
+                    
+                        'Based on cnblogs theme SimpleMemory.',
+                    
+                        '',
+                    
+                ],
+            
+                [
+                    
+                        'SimpleMemory Author:',
+                    
+                        'BNDong',
+                    
+                ],
+            
+                [
+                    
+                        'Theme:',
+                    
+                        'LiveForCode',
+                    
+                ],
+            
+        ],
+
+        FontIconExtend : "",
+
+        Donate : {
+            paypal  : '',
+            bitcoin : '',
+            alipay  : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/alipay.png',
+            wechat  : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/wechat.png'
+        },
+
+        Code : {
+            style : 'normal'
+        },  
+
+        Search : {
+            applicationID : '010C3EANT8',
+            apiKey        : 'c7abab9f11b79102b9aff7fe6d41447d',
+            indexName     : 'Notes',
+            hits          : {
+                page : 10
+            },
+            labels        : {
+                placeholder : '搜索',
+                empty       : '未发现与 「${query}」 相关的内容',
+                stats       : '${hits} 条相关条目，使用了 ${time} 毫秒',
+            }
+        }, 
+
+        Valine : {
+            switch         : true,
+            el             : '.comments-content',
+            appId          : 'srhKtvWPQTWYKh3qX8G8M7v0-gzGzoHsz',
+            appKey         : '8uVSP1q6UlALVC5igYfIfv2h',
+            placeholder    : '你是我一生只会遇见一次的惊喜...',
+            avatar         : 'mm',
+            meta           : 'nick,mail,link',
+            requiredFields : 'nick,mail',
+            pageSize       : 5,
+            lang           : 'zh-cn',
+            visitor        : true,
+            enableQQ       : true
+        },
+
+        Tocbot : {
+            switch                : true,
+            tocSelector           : '.toc',
+            contentSelector       : '.article-body',
+            headingSelector       : 'h1, h2, h3, h4, h5',
+            headingsOffset        : 0,
+            scrollSmooth          : true,
+            scrollSmoothOffset    : -5,
+            positionFixedSelector : '.toc',
+            positionFixedClass    : 'toc-fixed',
+            fixedSidebarOffset    : '',
+        },
+
+        Require : {
+            baseUrl     : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/",
+            waitSeconds : 100
+        },
+
+        Meting : {
+            id       : "3778678", 
+            lrcshow  : false, 
+            server   : "netease", 
+            type     : "playlist", 
+            fixed    : true, 
+            autoplay : false, 
+            loop     : "all", 
+            order    : "random", 
+            preload  : "auto", 
+            volume   : 0.67, 
+            mutex    : true
+        },
+
+        LazyLoad : {
+            default : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/website/lazyload.svg"
+        },
+  
+
+        Style : {
+            aplayer          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css",
+            archive          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/archive.css",
+            donate           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/donate.css",
+            fancybox         : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/jquery.fancybox.css",
+            footer           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/footer.css",
+            iconfont         : "https://at.alicdn.com/t/font_1546312_l3yohatebw.css",
+            index            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/index.css",
+            menuBubble       : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/menu-bubble.css",
+            page             : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/page.css",
+            post             : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css",
+            search           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css",
+            tocbot           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/tocbot.css",
+            normal           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css",
+            night            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/night.css",
+            clipboard        : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/clipboard.css"
+        },
+
+        Script: {
+            aplayer          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js",
+            config           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.config.js",
+            index            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js",
+            instantSearch    : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js",
+            jQuery           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js",
+            loading          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/loading.js",
+            meting           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js",
+            iscroll          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js",
+            require          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.min.js"
+        },
+
+        Font: {
+            LongCang   : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css",
+            Monda      : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css",
+            NotoSansSC : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css",
+            Playball   : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css",
+            PTMono     : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css",
+            RobotoSlab : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css",
+            Rosario    : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css",
+            UbuntuMono : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css"
+        },
+
+        Suffix : {
+            about : '所有伟大的事情都源于梦想，始于微不足道.'
+        },
+            
+        Theme : {
+            url  : 'https://github.com/first19326/Hexo-LiveForCode',
+            name : 'Hexo - Live For Code'
+        }  
+    };
+</script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js"></script>
+</body>
+</html>
