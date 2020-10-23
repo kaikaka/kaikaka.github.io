@@ -6,7 +6,7 @@
     <meta name="referrer" content="origin">
     <meta http-equiv="Cache-Control" content="no-transform">
     <meta http-equiv="Cache-Control" content="no-siteapp">
-    <title>归档</title>
+    <title>Swift扩展系列(1): DispatchQueue</title>
 
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
@@ -17,90 +17,120 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css">
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css">
 
-    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/archive.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css">
+    
+        <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css">
+    
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js"></script>
+
 <meta name="generator" content="Hexo 5.2.0"></head>
 <body>
     <a id="cover"></a>
     <div id="header">
-    <div class="header" >
+    <div class="header">
         <div class="vertical">
             <div class="inner">
-                <h1 class="header-title"></h1>
-                <h2 class="header-description" id="hitokoto"></h2>
-                <h3 class="header-info" id="hitokotoAuthor"></h3>
-                <!--
-                <h1 class="header-subtitle"></h1>
-                <p class="header-subinfo"></p>
-                -->
+                <h1 class="header-subtitle">Swift扩展系列(1): DispatchQueue</h1>
+                <div class="header-subinfo">
+                    <p class="article-info-text">
+                        <span>
+                            <i class="iconfont icon-time"></i> 发表时间：2016-07-31
+                        </span>
+                        
+                            <span id="/2016/07/31/2016-07-31/" class="leancloud_visitors" data-flag-title="Swift扩展系列(1): DispatchQueue">
+                                <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
+                            </span>
+                        
+                        <span>
+                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2016/07/31/2016-07-31/"></span>
+                        </span>  
+                    </p>                 
+                </div>
             </div>
         </div>
-        <a class="scroll-down" href="javascript:;" target="_self" data-offset="-45">
-            <span class="hidden">Scroll Down</span>
-            <i class="scroll-down-icon iconfont icon-return"></i>
-        </a>
+        <canvas id="articleHeaderCanvas"></canvas>
     </div>
 </div>
     <div id="container">
     <div id="content">
-        
-    <div class="articles">
-        
-        
-            
-                
-                    
-                    <div class="archives-wrap">      
-                        <div class="archive-year-wrap">
-                            <a href="/archive/2020" class="archive-year">
-                                2020
-                            </a>
-                        </div>
-                        <div class="archives">
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>10/18</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2020/10/18/hello-world/">Hello World</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-            
-                
-                        </div>
-                    </div>
-                
-                    
-                    <div class="archives-wrap">      
-                        <div class="archive-year-wrap">
-                            <a href="/archive/2016" class="archive-year">
-                                2016
-                            </a>
-                        </div>
-                        <div class="archives">
-            
-                            <div class="archive">
-                                <div class="article">
-                                    <a href="javascript:;">
-                                        <span>07/31</span>
-                                    </a>
-                                    <h2>
-                                        <a class="article-title" href="/2016/07/31/2016-07-31/">Swift扩展系列(1): DispatchQueue</a> 
-                                    </h2>
-                                </div>
-                            </div>     
-        
-        
-            </div>
-        </div>
-        
-    </div>   
+        <div id="article">
+    <div class="toc"></div>
+    <div class="article-body">
+        <p>在swift3.0，之前的GCD after 和 once 的写法都已经废弃，于是扩展一个类别</p>
+<pre>
+extension DispatchQueue {
+    static var userInteractive: DispatchQueue {
+        return DispatchQueue.global(qos: .userInteractive)
+    }
+    static var userInitiated: DispatchQueue { return DispatchQueue.global(qos: .userInitiated) }
+    static var utility: DispatchQueue { return DispatchQueue.global(qos: .utility) }
+    static var background: DispatchQueue { return DispatchQueue.global(qos: .background) }
 
+    func after(_ delay: Double, execute closure: @escaping () -> Void) {
+        asyncAfter(deadline: .now() + delay, execute: closure)
+    }
+
+    func syncResult<T>(_ closure: () -> T) -> T {
+        var result: T!
+        sync { result = closure() }
+        return result
+    }
+
+    private static var _onceTracker = [String]()
+    public class func once(token: String, block:(Void)->Void) {
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
+
+        if _onceTracker.contains(token) {
+            return
+        }
+
+        _onceTracker.append(token)
+        block()
+    }
+}
+</pre>
+        <p class="suffix-end">__END__</p>
+        <div class="suffix-box">
+            <div class="suffix-box-left">
+                <img src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/sidebar/avatar.jpg" alt="Live For Code">
+            </div>
+            <div class="suffix-box-right">
+                <span class="suffix-box-title">文章作者</span>：Live For Code
+                <br>
+                <span class="suffix-box-title">文章出处</span>：<a href="/2016/07/31/2016-07-31/" target="_blank">Swift扩展系列(1): DispatchQueue</a>
+                <br>
+                <span class="suffix-box-title">作者签名</span>：简单地活着, 肆意又精彩.
+                <br>
+                <span class="suffix-box-title">关于主题</span>：<a href="https://github.com/first19326/Hexo-LiveForCode" target="_blank">Hexo - Live For Code</a>
+                <br>
+                <span class="suffix-box-title">版权声明</span>：文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="BY-NC-SA" target="_blank">BY-NC-SA</a> 许可协议，转载请注明出处
+                <br>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+    <div class="article-footer">
+        
+        
+        <div class="article-prev-next">
+            
+                <a href="/2020/10/18/hello-world/" class="prev-prefix">« </a> 上一篇：    <a href="/2020/10/18/hello-world/" title="发布于 2020-10-18 09:26">Hello World</a>
+                <br>
+            
+            
+        </div>
+    </div>
+    
+    <div class="article-comments">
+        <div class="comments-title">
+            评论列表
+        </div>
+        <div class="comments-content">
+        </div>
+    </div>
+
+</div>
 
     </div>
 </div>
