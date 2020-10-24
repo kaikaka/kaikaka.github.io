@@ -58,9 +58,9 @@
     <div class="toc"></div>
     <div class="article-body">
         <p>####写在开篇<br>本篇文章我准备把它作为我研究动画系列的开篇，我之前关注了KittenYang大神的动画系列，但是因为工作中并没有用到这些动画也没有深入研究，现在重新捡起来，本篇是对KittenYang的KYAnimatedPageContol项目在Swift4.2版本的一个复刻，下面是复盘的整个过程（相信我，动起手来并不简单）</p>
-<p>####最终效果<br>在实现一个动画效果时候，动画并不是凭空想象而来的，可以计、画线稿、有个交互过程，由于已经有现成的了，直接看最终效果<br><img src="./_image/d2.gif"></p>
+<p>####最终效果<br>在实现一个动画效果时候，动画并不是凭空想象而来的，可以计、画线稿、有个交互过程，由于已经有现成的了，直接看最终效果<br><img src="./d2.gif"></p>
 <h4 id="拆解"><a href="#拆解" class="headerlink" title="拆解"></a>拆解</h4><p>抛开循环，初看这个效果，直观的感受就是小球发生了形变。所以一个可行的做法是：用四条贝塞尔曲线拼出这个小球的形状，然后只需单独控制每条贝塞尔曲线的形状就能实现小区的形变。具体这部分内容我也不想说了，下面录了一个效果图</p>
-<p><img src="./_image/d3.gif"></p>
+<p><img src="./d3.gif"></p>
 <p>若要看具体代码和实现原理我已经放到参考链接 –&gt; 小球的形变示例</p>
 <h4 id="复盘细节"><a href="#复盘细节" class="headerlink" title="复盘细节"></a>复盘细节</h4><p>######滑动时滚动圆</p>
 <p>1 .  如何在滑动让圆发生形变<br>     1.1 滑动的方向<br>            判断scrollView 移动的距离 减去 上次滑动的距离 是否小于scrollView距离的一半，则为向左滑动，反之向右<br>     1.2 计算相对圆的矩形坐标点          </p>
@@ -73,7 +73,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">override class func needsDisplay(forKey key: String) -&gt; Bool  &#123; </span><br><span class="line">    if key &#x3D;&#x3D; &quot;factor&quot; &#123; </span><br><span class="line">        return true </span><br><span class="line">    &#125; </span><br><span class="line">    return super.needsDisplay(forKey: key)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>factor 是形变圆D 或B点移动的距离 必须要监控的factor的值变化动画才能运动起来，在swift里需要给factor添加关键字@NSManaged才可以，这就是为什么重写needsDisplayforkey<br>        2.3  动画结束<br>         动画结束后要移除动画，removeAllAnimations，移除动画后会再次调用setNeedsDisplay方法，所以必须把factor也置为0，否则圆就会不规则。原版 issues里有提到这个问题，factor置为0即可</p>
 <p>#####滑动时滚动线和pgctl点<br>计算滑动时 pgctl应该移动的距离即可，有需要注意的是当移动的距离大于pgctl点的时候再把颜色改成选中的颜色，具体查看代码</p>
-<p>#####方型样式<br>方型样式稍微简单一些，效果示例<br><img src="./_image/d4.gif"><br>只需要做动画变换就可以了</p>
+<p>#####方型样式<br>方型样式稍微简单一些，效果示例<br><img src="./d4.gif"><br>只需要做动画变换就可以了</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var transform &#x3D; CGAffineTransform.identity</span><br><span class="line">        transform &#x3D; transform.translatedBy(x: center.x, y: center.y)</span><br><span class="line">        transform &#x3D; transform.rotated(by: radians)</span><br><span class="line">        transform &#x3D; transform.translatedBy(x: -center.x, y: -center.y)</span><br></pre></td></tr></table></figure>
 
 <p>####我是如何无限循环和自动循环<br>这是原版的issues问题，我拿来尝试实现了，原理：在循环的动画结束后，调用setContentOffset（animated：）方法，这时候会圆自动重绘，然后延迟执行弹性动画即可，值得注意的细节就是延长调用线的动画执行时间 就会有个线跟随球效果，这样就实现了一开篇的效果，代码在下面</p>
@@ -192,7 +192,7 @@
         BlogAvatar    : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/sidebar/avatar.jpg',
         BlogStartDate : '2020-10-24',
 
-        WebsiteTitleBlur         : '(◍´꒳`◍) Hi, 林江仙',
+        WebsiteTitleBlur         : 'Hi, 林江仙',
         WebsiteTitleBlurTimeOut  : 500,
         WebsiteTitleFocus        : '(*´∇｀*) 欢迎回来!',
         WebsiteTitleFocusTimeOut : 1000,

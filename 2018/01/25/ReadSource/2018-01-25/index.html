@@ -66,7 +66,7 @@
 <p>Builtin 是 Swift 内置库之一，由C+ + 写成，位于Builtins.cpp文件中。这个操作会调用 Builtin 会调用此文件中的 swift::getBuiltinType(ASTContext &amp;Context, StringRef Name) 函数，这个函数将会给 LLVM 返回一个用以数据处理的类型。Name 参数就是要获取的类型名称。</p>
 <p>####<font color=10a3ee>Builtin 调用</font> </p>
 <p>我们知道apple 是 Clang/Swift - LLVM 编译器架构：</p>
-<p><img src="./_image/2018-01-26-16-03-37.jpg"><br>在 Swift 编译器结构 的官方文档中描述了 Swift 编译器是如何工作的，分为如下步骤：</p>
+<p><img src="./2018-01-26-16-03-37.jpg"><br>在 Swift 编译器结构 的官方文档中描述了 Swift 编译器是如何工作的，分为如下步骤：</p>
 <p>解析：解析器是一个简单的递归下降解析器（在 lib / Parse 中实现），带有集成的手动编码词法分析器。解析器负责生成没有任何语义或类型信息的抽象语法树（AST），并针对输入源的语法问题发出警告或错误。</p>
 <p>语意分析：语义分析（在 lib / Sema 中实现）负责解析 AST 并将其转换为格式良好的完全检查形式的 AST，并在源代码中发出语义问题的警告或错误。语义分析包括类型推断，如果成功，则所得到的代码是类型检查安全的 AST 。</p>
 <p>Clang导入器：Clang导入器（在 lib / ClangImporter 中实现）导入Clang模块，并将它们导出的 C 或 Objective-C API 映射到相应的 Swift API中。结果导入的 AST 可以通过语义分析来引用。<br>SIL生成：Swift中间语言（Swift Intermediate Language，简称SIL）是一种高级的，Swift特有的中间语言，适用于 Swift 代码的进一步分析和优化。SIL 生成阶段（在 lib / SILGen 中实现）将类型检查的 AST 降低到所谓的 “原始” SIL。SIL的设计描述在 docs/ SIL.rst 中可以看到。</p>
@@ -250,7 +250,7 @@
         BlogAvatar    : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/sidebar/avatar.jpg',
         BlogStartDate : '2020-10-24',
 
-        WebsiteTitleBlur         : '(◍´꒳`◍) Hi, 林江仙',
+        WebsiteTitleBlur         : 'Hi, 林江仙',
         WebsiteTitleBlurTimeOut  : 500,
         WebsiteTitleFocus        : '(*´∇｀*) 欢迎回来!',
         WebsiteTitleFocusTimeOut : 1000,
