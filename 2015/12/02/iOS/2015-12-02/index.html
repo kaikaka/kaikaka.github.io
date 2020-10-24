@@ -58,7 +58,7 @@
     <div class="toc"></div>
     <div class="article-body">
         <p>先来看张最终效果图,左边是系统时钟，右边是自己写的效果</p>
-<p>![](~/2015-12-13 19_54_07.gif)</p>
+<p>![](./2015-12-13 19_54_07.gif)</p>
 <p>看了效果图，先分析下实现过程，首先秒针转动，每秒转动360/60=6度，<br>分针转动也是360/60=6度，时针转动的度数360/12=30度。</p>
 <p>####创建秒针</p>
 <pre>
@@ -108,7 +108,7 @@
 }
 </pre>
 <p>这里只讨论了如何实现，并没有选择优化，你可以定义宏来实现角度弧度之间的转换<br>到这里基本上时钟就算写好了，如果你出现下面这种情况，在viewDidLoad里面调用update方法即可</p>
-<p>![](~/2015-12-13 20_40_25.gif)<br>####角度弧度转换<br>1。弧度转角度<br>#define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))<br>2。角度转弧度<br>#define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)<br>M_PI 定义在Math.h内，其值为3.14159265358979323846264338327950288</p>
+<p>![](./2015-12-13 20_40_25.gif)<br>####角度弧度转换<br>1。弧度转角度<br>#define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))<br>2。角度转弧度<br>#define DEGREES_TO_RADIANS(angle) ((angle) / 180.0 * M_PI)<br>M_PI 定义在Math.h内，其值为3.14159265358979323846264338327950288</p>
 
         <p class="suffix-end">__END__</p>
         <div class="suffix-box">
@@ -215,7 +215,7 @@
 </div>
     <script>
     window.config = {
-        GitHubUserName     : 'first19326',
+        GitHubUserName     : 'kaikaka',
         GitHubRepositories : 'Hexo-LiveForCode',
 
         BlogUser      : '林江仙',
@@ -429,7 +429,7 @@
             
                 {
                     icon : 'icon-github', 
-                    url  : 'https://github.com/first19326'
+                    url  : 'https://github.com/kaikaka'
                 },
             
         ],
@@ -437,10 +437,10 @@
         FooterStyle : 2,
         BottomText  : {
             icon    : 'like-fill',
-            left    : '人生若只如初见',
-            right   : '何事秋风悲画扇'
+            left    : '思维殿堂',
+            right   : '所有伟大的事情都源于梦想,始于微不足道。'
         },
-        ThemeInfo   : true,
+        ThemeInfo   : false,
 
         ConsoleList : [
             

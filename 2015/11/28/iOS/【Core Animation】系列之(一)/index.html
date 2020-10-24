@@ -70,11 +70,11 @@
 [self.view.layer addSublayer:layer]; 
 </code></pre>
 <p>运行结果很简单,一个宽高60、蓝色背景的图层</p>
-<p><img src="~/424675-20151122002019249-1265792628.jpg"><br>我们设置下内容试试，插入如下代码</p>
+<p><img src="./424675-20151122002019249-1265792628.jpg"><br>我们设置下内容试试，插入如下代码</p>
 <pre>//  layer.contents = (id)[UIImage imageNamed:@"Icon-60"].CGImage;
   layer.contents = (__bridge id _Nullable)([UIImage imageNamed:@"Icon-60"].CGImage);</pre>
 <p>图片结果显示</p>
-<p><img src="~/424675-20151122002422405-1032344320.jpg"><br>注意到代码里面有CGColor,CGImage 这样的格式转换在设置内容时我用了两种转换方式，<br>contents 类型为id，CGImage类型是CGImageRef，第一种属于强制转换 ，第二种用__bridge 来桥接，还有CGColor ，为什么需要这种转换？</p>
+<p><img src="./424675-20151122002422405-1032344320.jpg"><br>注意到代码里面有CGColor,CGImage 这样的格式转换在设置内容时我用了两种转换方式，<br>contents 类型为id，CGImage类型是CGImageRef，第一种属于强制转换 ，第二种用__bridge 来桥接，还有CGColor ，为什么需要这种转换？</p>
 <ol>
 <li><p>首先，CALayer是定义在QuartCore框架的[Core Animation] CGImageRef、CGColorRef两种数据定义在CoreGraphics框架中的,UIColor、UIImage是定义在UIKit框架中的.</p>
 </li>
@@ -190,7 +190,7 @@
 </div>
     <script>
     window.config = {
-        GitHubUserName     : 'first19326',
+        GitHubUserName     : 'kaikaka',
         GitHubRepositories : 'Hexo-LiveForCode',
 
         BlogUser      : '林江仙',
@@ -404,7 +404,7 @@
             
                 {
                     icon : 'icon-github', 
-                    url  : 'https://github.com/first19326'
+                    url  : 'https://github.com/kaikaka'
                 },
             
         ],
@@ -412,10 +412,10 @@
         FooterStyle : 2,
         BottomText  : {
             icon    : 'like-fill',
-            left    : '人生若只如初见',
-            right   : '何事秋风悲画扇'
+            left    : '思维殿堂',
+            right   : '所有伟大的事情都源于梦想,始于微不足道。'
         },
-        ThemeInfo   : true,
+        ThemeInfo   : false,
 
         ConsoleList : [
             

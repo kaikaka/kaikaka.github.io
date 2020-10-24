@@ -81,14 +81,14 @@
 }
 </pre>
 <p>结果显示</p>
-<p>![](~/2015-12-01 23_50_10.gif)<br>当我关闭隐式动画的时候，用下面代码关闭隐式动画</p>
+<p><img src="./2015-12-0123_50_10.gif"><br>当我关闭隐式动画的时候，用下面代码关闭隐式动画</p>
 <pre>  [CATransaction begin];
   [CATransaction setDisableActions:YES];//关闭隐式动画
   _layer.position = CGPointMake(100, 100);
   [CATransaction commit];
 </pre>
 
-<p>![](~/2015-12-02 19_58_26.gif)</p>
+<p><img src="./2015-12-0219_58_26.gif"></p>
 <p>所以说每个隐式动画都会默认生成一个事务。<br>我修改了下代码，看起来变的更加有意思</p>
 <pre>- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
   UITouch *touch = [touches anyObject];
@@ -104,7 +104,7 @@
 </pre>
 
 <p>效果显示</p>
-<p>![](~/2015-12-02 20_14_59.gif)</p>
+<p><img src="./2015-12-0220_14_59.gif"></p>
 
         <p class="suffix-end">__END__</p>
         <div class="suffix-box">
@@ -211,7 +211,7 @@
 </div>
     <script>
     window.config = {
-        GitHubUserName     : 'first19326',
+        GitHubUserName     : 'kaikaka',
         GitHubRepositories : 'Hexo-LiveForCode',
 
         BlogUser      : '林江仙',
@@ -425,7 +425,7 @@
             
                 {
                     icon : 'icon-github', 
-                    url  : 'https://github.com/first19326'
+                    url  : 'https://github.com/kaikaka'
                 },
             
         ],
@@ -433,10 +433,10 @@
         FooterStyle : 2,
         BottomText  : {
             icon    : 'like-fill',
-            left    : '人生若只如初见',
-            right   : '何事秋风悲画扇'
+            left    : '思维殿堂',
+            right   : '所有伟大的事情都源于梦想,始于微不足道。'
         },
-        ThemeInfo   : true,
+        ThemeInfo   : false,
 
         ConsoleList : [
             
