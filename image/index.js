@@ -2,14 +2,14 @@
     window.defaultConfig = {
         GitHubUserName: 'first19326',
         GitHubRepositories: 'Hexo-LiveForCode',
-        BlogUser: "LiveForCode",
-        BlogAvatar: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/sidebar/avatar.jpg",
-        BlogStartDate: "2020-01-01",
+        BlogUser: "思维殿堂",
+        BlogAvatar: "./image/head.png",
+        BlogStartDate: "2020-10-24",
         WebsiteTitleBlur: "(◍´꒳`◍) Hi, 林江仙",
         WebsiteTitleBlurTimeOut: 500,
         WebsiteTitleFocus: "(*´∇｀*) 欢迎回来!",
         WebsiteTitleFocusTimeOut: 1000,
-        WebsiteFavicon: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/website/logo.png",
+        WebsiteFavicon: "./image/favicon.png",
         ProgressBar: {
             id: 'topProgressBar',
             color: '#77B6FF',
@@ -87,13 +87,13 @@
         MenuList : [
             {
                 name: "首页",
-                href: "",
+                href: "/",
                 target: "",
                 class: ""
             },
             {
                 name: "归档",
-                href: "",
+                href: "/archives",
                 target: "",
                 class: ""
             },
@@ -202,7 +202,7 @@
         Script: {
             aplayer: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js",
             config: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.config.js",
-            index: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/index.js",
+            index: "./image/index.css",
             instantSearch: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js",
             jQuery: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js",
             loading: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/loading.js",
