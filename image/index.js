@@ -3,7 +3,7 @@
         GitHubUserName: 'first19326',
         GitHubRepositories: 'Hexo-LiveForCode',
         BlogUser: "思维殿堂",
-        BlogAvatar: "./image/head.png",
+        BlogAvatar: "../../../../../image/head.png",
         BlogStartDate: "2020-10-24",
         WebsiteTitleBlur: "(◍´꒳`◍) Hi, 林江仙",
         WebsiteTitleBlurTimeOut: 500,
@@ -202,7 +202,7 @@
         Script: {
             aplayer: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js",
             config: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.config.js",
-            index: "./image/index.css",
+            index: "../../../../../image/index.js",
             instantSearch: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js",
             jQuery: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js",
             loading: "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/loading.js",
