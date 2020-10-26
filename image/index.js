@@ -87,13 +87,13 @@
         MenuList : [
             {
                 name: "首页",
-                href: "/",
+                href: "",
                 target: "",
                 class: ""
             },
             {
                 name: "归档",
-                href: "/archives",
+                href: "",
                 target: "",
                 class: ""
             },
