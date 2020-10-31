@@ -78,7 +78,7 @@
 
 <p>####我是如何无限循环和自动循环<br>这是原版的issues问题，我拿来尝试实现了，原理：在循环的动画结束后，调用setContentOffset（animated：）方法，这时候会圆自动重绘，然后延迟执行弹性动画即可，值得注意的细节就是延长调用线的动画执行时间 就会有个线跟随球效果，这样就实现了一开篇的效果，代码在下面</p>
 <p>####总结<br>花了好几天时间，出乎意料的难，看原版和博客感觉很容易，当我动手时，发现好多细节参数都需要自己仔细的调，梳理逻辑，并不是原封不动的翻译成Swift就行，需要仔细理解每句代码，加减的距离是什么，为什么要这样做，为什么要重写那些方法等等，对应了解决了原版的一些issues，源码我放到github上，链接放到参考目录里了，这篇博客是仓促写的，但是大致的脉络，怎么运动和变化、关键步骤都有说明，想要完全理解可以和代码一一对照，每一个好的动画都需要耐心，欢迎勘误。</p>
-<p>参考目录<br><a target="_blank" rel="noopener" href="https://github.com/sugarAndsugar/AnimatedPageControl/tree/master">本篇动画效果源码</a><br><a target="_blank" rel="noopener" href="https://github.com/KittenYang/A-GUIDE-TO-iOS-ANIMATION/tree/master/Objective-C%20Version/AnimatedCircleDemo">小球的形变示例</a><br><a target="_blank" rel="noopener" href="https://github.com/KittenYang/KYAnimatedPageControl">KYAnimatedPageControl</a></p>
+<p>参考目录<br><a target="_blank" rel="noopener" href="https://github.com/kaikaka/AnimatedPageControl/tree/master">本篇动画效果源码</a><br><a target="_blank" rel="noopener" href="https://github.com/KittenYang/A-GUIDE-TO-iOS-ANIMATION/tree/master/Objective-C%20Version/AnimatedCircleDemo">小球的形变示例</a><br><a target="_blank" rel="noopener" href="https://github.com/KittenYang/KYAnimatedPageControl">KYAnimatedPageControl</a></p>
 
         <p class="suffix-end">__END__</p>
         <div class="suffix-box">
