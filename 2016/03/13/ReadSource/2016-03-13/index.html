@@ -58,7 +58,7 @@
     <div class="toc"></div>
     <div class="article-body">
         <p>这是一个仿照AppStore 评分功能的demo<br>要求点击评分 和可以滑动评分<br>先来看下效果</p>
-<p><img src="./30.gif"></p>
+<p><img src="../../../../../image/2016-03-13/30.gif"></p>
 <p>从效果来看，我们并不需要半星，也就是说我们可以用类似遮罩的方式，<br>创建两个view ，底层的view 显示空心星的图片，上面的view显示实心星的图片，<br>重要的一点要把顶层的clipsToBounds设置yes 即超出部分裁剪。<br>然后我们可以给根view加个单击和滑动手势，然后根据点击或滑动在星的范围则显示topview<br>不同的宽度。<br>代码示例：</p>
 <pre>
 //①获取坐标点
@@ -77,7 +77,7 @@
       _starChoiceBlock(_starCount);
     }
 </pre>
-<p>我们可以增加回调，以及按照接口规范来说并设置不支持点击的情况，具体看源码<br>请戳<br>[github:]<a target="_blank" rel="noopener" href="https://github.com/sugarAndsugar/RatingBar">https://github.com/sugarAndsugar/RatingBar</a></p>
+<p>我们可以增加回调，以及按照接口规范来说并设置不支持点击的情况，具体看源码<br>请戳<br>[github:]<a target="_blank" rel="noopener" href="https://github.com/kaikaka/RatingBar">https://github.com/kaikaka/RatingBar</a></p>
 
         <p class="suffix-end">__END__</p>
         <div class="suffix-box">

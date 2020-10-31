@@ -59,15 +59,15 @@
     <div class="article-body">
         <h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>我用了uitabbarcontroller 作为根视图，然后带有导航的viewcontroller作为子视图，<br>然后在view里面放了一个新的view，并把新的view的约束设置为上下左右都为0，如图一，<br>为了更清晰的表现，我们把新view的背景设置成黑色。然后运行看下下沉的效果</p>
 <p>图一</p>
-<p><img src="./BCE913E7-294D-48A3-9BF9-DD12C155283E.png"></p>
+<p><img src="../../../../../image/2015-12-27/BCE913E7-294D-48A3-9BF9-DD12C155283E.png"></p>
 <p>效果图：</p>
-<p><img src="./27.gif"></p>
+<p><img src="../../../../../image/2015-12-27/27.gif"></p>
 <p>####原因<br>我认为是因为tabbar动画引起的，在tabbar在隐藏的时候 push动画还没有加载完全，当页面还没出现在屏幕的时候，<br>AutoLayout 便绘制了一遍，view的大小是按照不包括tabbar高度的大小绘制的，当tabbar彻底隐藏后，view加载<br>完成又根据当前view的大小重新自适应了控件的位置，于是就出现了下沉的效果。</p>
 <p>####解决<br>既然找到原因了，那么要怎么解决<br>现在有两种方案<br>方案一:</p>
 <ul>
 <li>修改约束</li>
 </ul>
-<p><img src="./28.gif"><br>ps  图上约束49应该改成0。</p>
+<p><img src="../../../../../image/2015-12-27/28.gif"><br>ps  图上约束49应该改成0。</p>
 <p>方案2</p>
 <ul>
 <li>重绘view 的大小<pre>- (void)viewWillLayoutSubviews {
@@ -76,7 +76,7 @@ self.view.frame = _CGR(self.view.frame.origin.x, self.view.frame.origin.y, self.
 
 </li>
 </ul>
-<p>####结果<br>看下面效果（效果略粗糙），下沉效果已经消失，两种方式按需求选择适合自己的就行。<br><img src="./30.gif"></p>
+<p>####结果<br>看下面效果（效果略粗糙），下沉效果已经消失，两种方式按需求选择适合自己的就行。<br><img src="../../../../../image/2015-12-27/30.gif"></p>
 
         <p class="suffix-end">__END__</p>
         <div class="suffix-box">

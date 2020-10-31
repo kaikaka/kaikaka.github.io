@@ -67,10 +67,10 @@
 <p>####解决方案</p>
 <p>这时候需要去官网下个低版本的XCode，XCode历史版本，<a target="_blank" rel="noopener" href="https://developer.apple.com/download/more/">https://developer.apple.com/download/more/</a>；注意对于当前系统，一定要下XCode 10版本，我分别下了XCode 9.4.1、9.0，经过测试都无法使用。</p>
 <p>下载成功后可以用xcode-select -p 查看指向路径，</p>
-<p><img src="./WX20200607-121514@2x.png"><br>如果路径不正确，可以用sudo xcode-select -s /Users/xxxxx/Downloads/Xcode.app/Contents/Developer 来选择路径。</p>
+<p><img src="../../../../../image/2020-06-06/WX20200607-121514@2x.png"><br>如果路径不正确，可以用sudo xcode-select -s /Users/xxxxx/Downloads/Xcode.app/Contents/Developer 来选择路径。</p>
 <p>我下载的XCode10 放在了Downloads文件夹下。</p>
 <p>然后cd到dumpdecrypted所在目录，删除原来生成的 dumpdecrypted.dylib和dumpdecrypted.o文件，然后重新执行make命令。</p>
-<p>然后将重新生成的dumpdecrypted.dylib拷贝到手机上，<br><img src="./2020-06-07-12-53-04.png"><br>然后就可以用DYLD_INSERT_LIBRARIES=dumpdecrypted.dylib命令脱壳了。</p>
+<p>然后将重新生成的dumpdecrypted.dylib拷贝到手机上，<br><img src="../../../../../image/2020-06-06/2020-06-07-12-53-04.png"><br>然后就可以用DYLD_INSERT_LIBRARIES=dumpdecrypted.dylib命令脱壳了。</p>
 
         <p class="suffix-end">__END__</p>
         <div class="suffix-box">

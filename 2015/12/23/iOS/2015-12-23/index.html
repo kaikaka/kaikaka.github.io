@@ -58,7 +58,7 @@
     <div class="toc"></div>
     <div class="article-body">
         <p>惯例先看下最终效果图</p>
-<p><img src="./2015-12-2320_22_19.gif"><br>实现这个效果肯定不只一种方式，我就说下我的想法来抛砖引玉吧，<br>我们这里的标签有背景、圆角、可以修改字体大小颜色等等，完全跟一个button没什么区别，<br>那我们就把标签作为一个button，添加到UITextField上，但是怎么控制光标位置在button后面呢。<br>重要的部分来了，UITextField有个关键属性leftView，我们可以设置leftView为透明色，<br>让它的宽度和标签累计的宽度保持一致，这样看起来光标的位置就一直在标签的后面了。<br>是不是看起来很简单，我们先自定义一个button</p>
+<p><img src="../../../../../image/2015-12-23/2015-12-2320_22_19.gif"><br>实现这个效果肯定不只一种方式，我就说下我的想法来抛砖引玉吧，<br>我们这里的标签有背景、圆角、可以修改字体大小颜色等等，完全跟一个button没什么区别，<br>那我们就把标签作为一个button，添加到UITextField上，但是怎么控制光标位置在button后面呢。<br>重要的部分来了，UITextField有个关键属性leftView，我们可以设置leftView为透明色，<br>让它的宽度和标签累计的宽度保持一致，这样看起来光标的位置就一直在标签的后面了。<br>是不是看起来很简单，我们先自定义一个button</p>
 <p>给button一个必要的初始化方法和属性</p>
 <pre>- (id)initWithTag:(NSString *)tag;
 @property (nonatomic, strong) NSString  *value;</pre>
@@ -227,7 +227,7 @@ _tagsArray = muteTags;
 [self layoutTags];</pre>
 
 <p>写到删除，基本上这个自定义标签控件基本完成了，但是如果我想让多余的标签在第二行或像<br>textview一样换行显示，该怎么做呢？<br>下一篇我们就用另外一种方式来实现标签并且换行</p>
-<p>你可以直接查看源码：<br><a target="_blank" rel="noopener" href="https://github.com/sugarAndsugar/KLTagField">https://github.com/sugarAndsugar/KLTagField</a></p>
+<p>你可以直接查看源码：<br><a target="_blank" rel="noopener" href="https://github.com/kaikaka/KLTagField">https://github.com/kaikaka/KLTagField</a></p>
 
         <p class="suffix-end">__END__</p>
         <div class="suffix-box">

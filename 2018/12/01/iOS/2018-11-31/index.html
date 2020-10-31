@@ -62,10 +62,10 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">app store connect operation error</span><br><span class="line">an error occurred while uploading the package </span><br><span class="line"></span><br><span class="line">an exception has occurred: the transport has been detected as having stalled and has been aborted please try again</span><br></pre></td></tr></table></figure>
 
 <p>原因是因为Mac的Java版本更新导致<br>解决办法<br>在终端执行下面三条指令:<br>1、cd ~<br>2、mv .itmstransporter/ .old_itmstransporter/<br>3、”/Applications/Xcode.app/Contents/Applications/Application Loader.app/Contents/itms/bin/iTMSTransporter”<br>终端执行完毕，重现打开xcode打包上传.</p>
-<p>重新上传后又遇到如下错误：<br><img src="./QQ20181203-132051@2x.png"></p>
+<p>重新上传后又遇到如下错误：<br><img src="../../../../../image/2018-12-01/QQ20181203-132051@2x.png"></p>
 <p>解决办法：</p>
 <p>在 Application Loader 设置 -&gt;高级 -&gt; 取消DAV 然后重新上传就可以了。</p>
-<p><img src="./2018-12-03-13-47-29.png"></p>
+<p><img src="../../../../../image/2018-12-01/2018-12-03-13-47-29.png"></p>
 <p>参考文档:<br><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/26240579/unable-to-upload-ios-app-with-application-loader">app store connect operation error</a></p>
 
         <p class="suffix-end">__END__</p>
