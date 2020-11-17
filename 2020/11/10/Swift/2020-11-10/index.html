@@ -95,11 +95,8 @@
 <li>最终是否暴露成功，还需要考虑成员自身的访问级别</li>
 <li>open , public , internal , fileprivate ,private</li>
 </ul>
-<h3 id="为什么Swift暴露给OC的类最终要继承自NSObject"><a href="#为什么Swift暴露给OC的类最终要继承自NSObject" class="headerlink" title="为什么Swift暴露给OC的类最终要继承自NSObject?"></a>为什么Swift暴露给OC的类最终要继承自NSObject?</h3><details> 因为要在OC里面调方法，而OC里面的方法调用是走objc_msgSend()机制，而runtime机制则需要isa指针，只有继承NSObject 才有isa指针 </details>
-
-
-<h3 id="OC暴露的方法底层在SWift是怎么调用的？反过来，OC调用Swift方法底层又是如何调用？"><a href="#OC暴露的方法底层在SWift是怎么调用的？反过来，OC调用Swift方法底层又是如何调用？" class="headerlink" title="OC暴露的方法底层在SWift是怎么调用的？反过来，OC调用Swift方法底层又是如何调用？"></a>OC暴露的方法底层在SWift是怎么调用的？反过来，OC调用Swift方法底层又是如何调用？</h3><details>我们创建个OC的类 Tesla
-
+<h3 id="为什么Swift暴露给OC的类最终要继承自NSObject"><a href="#为什么Swift暴露给OC的类最终要继承自NSObject" class="headerlink" title="为什么Swift暴露给OC的类最终要继承自NSObject?"></a>为什么Swift暴露给OC的类最终要继承自NSObject?</h3><p>因为要在OC里面调方法，而OC里面的方法调用是走objc_msgSend()机制，而runtime机制则需要isa指针，只有继承NSObject 才有isa指针</p>
+<h3 id="OC暴露的方法底层在SWift是怎么调用的？反过来，OC调用Swift方法底层又是如何调用？"><a href="#OC暴露的方法底层在SWift是怎么调用的？反过来，OC调用Swift方法底层又是如何调用？" class="headerlink" title="OC暴露的方法底层在SWift是怎么调用的？反过来，OC调用Swift方法底层又是如何调用？"></a>OC暴露的方法底层在SWift是怎么调用的？反过来，OC调用Swift方法底层又是如何调用？</h3><p>我们创建个OC的类 Tesla</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@interface Tesla : NSObject</span><br><span class="line"></span><br><span class="line">- (void)run;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
 
 <p>然后我们用swift的代码来调用</p>
@@ -127,12 +124,10 @@ func run() &#123;
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Car *car &#x3D; [[Car alloc] initWithPrice:10];</span><br><span class="line">[car run];</span><br></pre></td></tr></table></figure>
 <p>那么我们就看一下汇编是如何调用的？</p>
 <p><img src="../../../../../image/2020-11-10/2020-11-11-2.png"></p>
-<p>和上面的一样，一样是走的runtime机制</details></p>
-<h3 id="swift类不用-objc修饰和用-objc调用流程一致吗？"><a href="#swift类不用-objc修饰和用-objc调用流程一致吗？" class="headerlink" title="swift类不用@objc修饰和用@objc调用流程一致吗？"></a>swift类不用@objc修饰和用@objc调用流程一致吗？</h3><details>很明显如果oc调用swift的类，那么就是走runtime机制。
-如果是swift调swift方法，不管是否用objc修饰，那么都会走虚表，因为没必要再去走runtime机制，纯swift性能还是要好一点。见下图
-
+<p>和上面的一样，一样是走的runtime机制</p>
+<h3 id="swift类不用-objc修饰和用-objc调用流程一致吗？"><a href="#swift类不用-objc修饰和用-objc调用流程一致吗？" class="headerlink" title="swift类不用@objc修饰和用@objc调用流程一致吗？"></a>swift类不用@objc修饰和用@objc调用流程一致吗？</h3><p>很明显如果oc调用swift的类，那么就是走runtime机制。<br>如果是swift调swift方法，不管是否用objc修饰，那么都会走虚表，因为没必要再去走runtime机制，纯swift性能还是要好一点。见下图</p>
 <p><img src="../../../../../image/2020-11-10/2020-11-11-3.png"></p>
-<p>如果实在是想走runtime机制的话，可以用关键字，dynamic修饰。</details></p>
+<p>如果实在是想走runtime机制的话，可以用关键字，dynamic修饰。</p>
 <h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3><p>Swift的字符串类型String，跟OC的NSString，在API设计上还是有较大差异</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var emptyStr1 &#x3D; &quot;&quot;</span><br><span class="line">var emptyStr2 &#x3D; String()</span><br><span class="line">var str &#x3D; &quot;123456&quot;</span><br><span class="line">print(str.hasPrefix(&quot;123&quot;)) &#x2F;&#x2F; true</span><br><span class="line">print(str.hasSuffix(&quot;456&quot;)) &#x2F;&#x2F; true</span><br><span class="line">var str1: String &#x3D; &quot;1&quot; &#x2F;&#x2F; 拼接</span><br><span class="line">str1.append(&quot;_2&quot;)</span><br><span class="line">print(str1) &#x2F;&#x2F;1_2</span><br></pre></td></tr></table></figure>
 
@@ -157,6 +152,7 @@ func run() &#123;
 <p>它们两个字符串的内存地址是一样的，如果到这里你还有疑惑，可以看源码实现，参考链接[Swift 中 Substring 与 String] 。</p>
 <p>当然如果重新创建字符串，如 var str6 = String(substr5)，那么就会重新分配内存空间。</p>
 <p><img src="../../../../../image/2020-11-10/2020-11-16-5.png"></p>
+<p>DEMO地址:<a target="_blank" rel="noopener" href="https://github.com/kaikaka/SwiftTips">https://github.com/kaikaka/SwiftTips</a></p>
 <p>参考链接: </p>
 <p><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/27638">窥探Swift之字符串（String）</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/7e4dcc768ad1">iOS-汇编</a></p>
