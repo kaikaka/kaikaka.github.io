@@ -57,7 +57,7 @@
         <div id="article">
     <div class="toc"></div>
     <div class="article-body">
-        <h3 id="String知识点补充"><a href="#String知识点补充" class="headerlink" title="String知识点补充"></a>String知识点补充</h3><h5 id="String-与-NSString"><a href="#String-与-NSString" class="headerlink" title="String 与 NSString"></a>String 与 NSString</h5><p>首先我们来看下面一段代码</p>
+        <h3 id="String知识点补充"><a href="#String知识点补充" class="headerlink" title="String知识点补充"></a>String知识点补充</h3><h4 id="String-与-NSString"><a href="#String-与-NSString" class="headerlink" title="String 与 NSString"></a>String 与 NSString</h4><p>首先我们来看下面一段代码</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str1:<span class="type">String</span> = <span class="string">&quot;car&quot;</span></span><br><span class="line"><span class="keyword">var</span> str2:<span class="type">NSString</span> = <span class="string">&quot;tesla&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str3 = str1 <span class="keyword">as</span> <span class="type">NSString</span></span><br><span class="line"><span class="keyword">var</span> str4 = str2 <span class="keyword">as</span> <span class="type">String</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(str1, str3)</span><br><span class="line"><span class="built_in">print</span>(str2,str4)</span><br></pre></td></tr></table></figure>
 
 <p>很明显它的打印是</p>
@@ -66,13 +66,13 @@
 <p>注意我们都知道Swift里面的String 是可变的，而NSString是不可变的，那么问题来了，现在我把可变的str1转换成str3，那么我对Str1作拼接，会影响到Str3吗？</p>
 <p>答案是不会。</p>
 <p>也就是说一旦桥接完毕后，就是两个不同的东西。</p>
-<h5 id="比较字符串内容是否等价"><a href="#比较字符串内容是否等价" class="headerlink" title="比较字符串内容是否等价"></a>比较字符串内容是否等价</h5><p>​    String 使用 == 运算符</p>
+<h4 id="比较字符串内容是否等价"><a href="#比较字符串内容是否等价" class="headerlink" title="比较字符串内容是否等价"></a>比较字符串内容是否等价</h4><p>​    String 使用 == 运算符</p>
 <p>​    NSString使用isEqual方法，也可以使用== 运算符，本质上还是调用isEqual方法，如下</p>
 <img src="/Users/yinxiangkai/Desktop/Germinal/Kai/source/image/2020-12-14/WX20201214-224936@2x.png" style="zoom:50%;margin:5px" />
 
 
 
-<h5 id="Swift-、OC桥接转换表"><a href="#Swift-、OC桥接转换表" class="headerlink" title="Swift 、OC桥接转换表"></a>Swift 、OC桥接转换表</h5><p>在OC中有NSMutableString、NSMutableArray、NSMutableDictionary、NSMutableData等，那么它们能与对应的String，Array       等在Swift中相互转换吗？</p>
+<h4 id="Swift-、OC桥接转换表"><a href="#Swift-、OC桥接转换表" class="headerlink" title="Swift 、OC桥接转换表"></a>Swift 、OC桥接转换表</h4><p>在OC中有NSMutableString、NSMutableArray、NSMutableDictionary、NSMutableData等，那么它们能与对应的String，Array       等在Swift中相互转换吗？</p>
 <p>答案是 不能。参考如下代码</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str9 :<span class="type">String</span> = <span class="string">&quot;car&quot;</span></span><br><span class="line"><span class="keyword">var</span> str10 :<span class="type">NSMutableString</span> = str9 <span class="keyword">as</span> <span class="type">NSMutableString</span></span><br><span class="line"><span class="built_in">print</span>(str10)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str7 :<span class="type">NSMutableString</span> = <span class="string">&quot;car&quot;</span></span><br><span class="line"><span class="keyword">var</span> str8 :<span class="type">String</span> = str7 <span class="keyword">as</span> <span class="type">String</span></span><br><span class="line"><span class="built_in">print</span>(str8)</span><br></pre></td></tr></table></figure>
 
@@ -105,7 +105,7 @@
 <p>  ​        字符串长度 &gt;0xF，字符串内存存在__Text.cstring中即常量区。 字符串的地址值信息存在str2变量的后8个字符中。</p>
 <p>  ​        如果拼接字符串，字符串长度 &lt;= 0xF，字符串内容依然放在str1变量的内存中。而如果字符串长度 &gt; 0xF，那么就会开辟堆空间。堆空间前32字节是一些描述信息，后32个字节是存放真正的内存地址。(<strong>dyld_stub_binder</strong> 符号绑定)</p>
 <p>  ​        </p>
-<h3 id="资源名管理"><a href="#资源名管理" class="headerlink" title="资源名管理"></a>资源名管理</h3><h5 id="方案一"><a href="#方案一" class="headerlink" title="[方案一]"></a>[方案一]</h5><p>以前使用图片的调用方法</p>
+<h3 id="资源名管理"><a href="#资源名管理" class="headerlink" title="资源名管理"></a>资源名管理</h3><h4 id="方案一"><a href="#方案一" class="headerlink" title="[方案一]"></a>[方案一]</h4><p>以前使用图片的调用方法</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> img = <span class="type">UIImage</span>.<span class="keyword">init</span>(named: <span class="string">&quot;favicon&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> btn = <span class="type">UIButton</span>.<span class="keyword">init</span>(type: .custom)</span><br><span class="line">btn.setTitle(<span class="string">&quot;分享&quot;</span>, <span class="keyword">for</span>: .normal)</span><br></pre></td></tr></table></figure>
 
 <p>它的缺点呢，不好管理，容易错。接下来看下面这种方案</p>
@@ -121,7 +121,7 @@
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> img3 = <span class="type">UIImage</span>.<span class="keyword">init</span>(<span class="type">R</span>.image.favicon)</span><br><span class="line"><span class="keyword">let</span> btn3 = <span class="type">UIButton</span>.<span class="keyword">init</span>(type: .custom)</span><br><span class="line">btn3.setTitle(<span class="type">R</span>.string.share, <span class="keyword">for</span>: .normal)</span><br></pre></td></tr></table></figure>
 
 <p>这样看起来就简洁的多了。</p>
-<h5 id="方案二"><a href="#方案二" class="headerlink" title="[方案二]"></a>[方案二]</h5><p>还有资源名管理的其他思路，比如我们想更简洁一点，像下面这样，</p>
+<h4 id="方案二"><a href="#方案二" class="headerlink" title="[方案二]"></a>[方案二]</h4><p>还有资源名管理的其他思路，比如我们想更简洁一点，像下面这样，</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> img4 = <span class="type">UIImage</span>(named: <span class="string">&quot;favicon&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> font4 = <span class="type">UIFont</span>(name: <span class="string">&quot;Arial&quot;</span>, size: <span class="number">14</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> img5 = <span class="type">R</span>.image.favicon</span><br><span class="line"><span class="keyword">let</span> font5 = <span class="type">R</span>.font.arial(<span class="number">14</span>)</span><br></pre></td></tr></table></figure>
 
 <p>其实和刚才的方法是大同小异，我们的R类就可以修改下：</p>
@@ -131,13 +131,13 @@
 <h3 id="关于Array的思考"><a href="#关于Array的思考" class="headerlink" title="关于Array的思考"></a>关于Array的思考</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span><br></pre></td></tr></table></figure>
 
 <p>我们通过arr这个变量来探讨Array的内存。</p>
-<h5 id="1个Array变量占用多少内存？"><a href="#1个Array变量占用多少内存？" class="headerlink" title="1个Array变量占用多少内存？"></a>1个Array变量占用多少内存？</h5><img src="/Users/yinxiangkai/Desktop/Germinal/Kai/source/image/2020-12-14/WX20201217-225026@2x.png" alt="WX20201217-225026@2x" style="zoom:40%;margin-left:0" />
+<h4 id="1个Array变量占用多少内存？"><a href="#1个Array变量占用多少内存？" class="headerlink" title="1个Array变量占用多少内存？"></a>1个Array变量占用多少内存？</h4><img src="/Users/yinxiangkai/Desktop/Germinal/Kai/source/image/2020-12-14/WX20201217-225026@2x.png" alt="WX20201217-225026@2x" style="zoom:40%;margin-left:0" />
 
 <p>通过读取arr的内存地址，获取地址信息</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(lldb) register read rax</span><br><span class="line">     rax = <span class="number">0x0000000100512180</span></span><br><span class="line">(lldb) x/10xg <span class="number">0x0000000100512180</span></span><br><span class="line"><span class="number">0x100512180</span>: <span class="number">0x00007fff992ec4d8</span> <span class="number">0x0000000000000002</span></span><br><span class="line"><span class="number">0x100512190</span>: <span class="number">0x0000000000000004</span> <span class="number">0x0000000000000008</span></span><br><span class="line"><span class="number">0x1005121a0</span>: <span class="number">0x0000000000000001</span> <span class="number">0x0000000000000002</span></span><br><span class="line"><span class="number">0x1005121b0</span>: <span class="number">0x0000000000000003</span> <span class="number">0x0000000000000004</span></span><br><span class="line"><span class="number">0x1005121c0</span>: <span class="number">0x0000000000000000</span> <span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure>
 
 <p>其中，0x00007fff992ec4d8 可能是类型信息，0x0000000000000002是引用计数，0x0000000000000004数组的长度，0x0000000000000008数组的容量，所以前16个字节是存储的数组的信息，后面才是元素的内存地址。</p>
-<h5 id="数组中的数据存放在什么地方？"><a href="#数组中的数据存放在什么地方？" class="headerlink" title="数组中的数据存放在什么地方？"></a>数组中的数据存放在什么地方？</h5><p>堆空间</p>
+<h4 id="数组中的数据存放在什么地方？"><a href="#数组中的数据存放在什么地方？" class="headerlink" title="数组中的数据存放在什么地方？"></a>数组中的数据存放在什么地方？</h4><p>堆空间</p>
 <p>参考链接：</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/mac-cain13/R.swift">R.Swift</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/SwiftGen/SwiftGen">SwiftGen</a></p>
