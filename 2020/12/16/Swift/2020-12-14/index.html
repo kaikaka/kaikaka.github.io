@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
+    <meta name="referrer" content="origin">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <title></title>
+
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css">
+
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css">
+    
+        <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css">
+    
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js"></script>
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+    <a id="cover"></a>
+    <div id="header">
+    <div class="header">
+        <div class="vertical">
+            <div class="inner">
+                <h1 class="header-subtitle"></h1>
+                <div class="header-subinfo">
+                    <p class="article-info-text">
+                        <span>
+                            <i class="iconfont icon-time"></i> 发表时间：2020-12-16
+                        </span>
+                        
+                            <span id="/2020/12/16/Swift/2020-12-14/" class="leancloud_visitors" data-flag-title="">
+                                <i class="iconfont icon-browse"></i> 阅读：<sapn class="leancloud-visitors-count"></span>
+                            </span>
+                        
+                        <span>
+                            <i class="iconfont icon-interactive"></i> 评论：<span class="valine-comment-count" data-xid="/2020/12/16/Swift/2020-12-14/"></span>
+                        </span>  
+                    </p>                 
+                </div>
+            </div>
+        </div>
+        <canvas id="articleHeaderCanvas"></canvas>
+    </div>
+</div>
+    <div id="container">
+    <div id="content">
+        <div id="article">
+    <div class="toc"></div>
+    <div class="article-body">
+        <h3 id="String知识点补充"><a href="#String知识点补充" class="headerlink" title="String知识点补充"></a>String知识点补充</h3><h5 id="String-与-NSString"><a href="#String-与-NSString" class="headerlink" title="String 与 NSString"></a>String 与 NSString</h5><p>首先我们来看下面一段代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str1:<span class="type">String</span> = <span class="string">&quot;car&quot;</span></span><br><span class="line"><span class="keyword">var</span> str2:<span class="type">NSString</span> = <span class="string">&quot;tesla&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str3 = str1 <span class="keyword">as</span> <span class="type">NSString</span></span><br><span class="line"><span class="keyword">var</span> str4 = str2 <span class="keyword">as</span> <span class="type">String</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(str1, str3)</span><br><span class="line"><span class="built_in">print</span>(str2,str4)</span><br></pre></td></tr></table></figure>
+
+<p>很明显它的打印是</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">car car</span><br><span class="line">tesla tesla</span><br></pre></td></tr></table></figure>
+
+<p>注意我们都知道Swift里面的String 是可变的，而NSString是不可变的，那么问题来了，现在我把可变的str1转换成str3，那么我对Str1作拼接，会影响到Str3吗？</p>
+<p>答案是不会。</p>
+<p>也就是说一旦桥接完毕后，就是两个不同的东西。</p>
+<h5 id="比较字符串内容是否等价"><a href="#比较字符串内容是否等价" class="headerlink" title="比较字符串内容是否等价"></a>比较字符串内容是否等价</h5><p>​    String 使用 == 运算符</p>
+<p>​    NSString使用isEqual方法，也可以使用== 运算符，本质上还是调用isEqual方法，如下</p>
+<img src="/Users/yinxiangkai/Desktop/Germinal/Kai/source/image/2020-12-14/WX20201214-224936@2x.png" style="zoom:50%;margin:5px" />
+
+
+
+<h5 id="Swift-、OC桥接转换表"><a href="#Swift-、OC桥接转换表" class="headerlink" title="Swift 、OC桥接转换表"></a>Swift 、OC桥接转换表</h5><p>在OC中有NSMutableString、NSMutableArray、NSMutableDictionary、NSMutableData等，那么它们能与对应的String，Array       等在Swift中相互转换吗？</p>
+<p>答案是 不能。参考如下代码</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str9 :<span class="type">String</span> = <span class="string">&quot;car&quot;</span></span><br><span class="line"><span class="keyword">var</span> str10 :<span class="type">NSMutableString</span> = str9 <span class="keyword">as</span> <span class="type">NSMutableString</span></span><br><span class="line"><span class="built_in">print</span>(str10)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str7 :<span class="type">NSMutableString</span> = <span class="string">&quot;car&quot;</span></span><br><span class="line"><span class="keyword">var</span> str8 :<span class="type">String</span> = str7 <span class="keyword">as</span> <span class="type">String</span></span><br><span class="line"><span class="built_in">print</span>(str8)</span><br></pre></td></tr></table></figure>
+
+<p>可以得出 (这里的桥接转换是as 而不是init)</p>
+<p>1.String 与NSString 可以互相桥接转换</p>
+<p>2.String 不能桥接转换成NSMutableString</p>
+<img src="/Users/yinxiangkai/Desktop/Germinal/Kai/source/image/2020-12-14/WX20201214-231528@2x.png" style="zoom:40%;margin-left:1px" />
+
+
+
+<ul>
+<li><h6 id="思考下面字符串的问题"><a href="#思考下面字符串的问题" class="headerlink" title="思考下面字符串的问题"></a>思考下面字符串的问题</h6><p>1个String变量占用多少内存？</p>
+<p>下面2个String变量，底层存储有什么不同？</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str1 = <span class="string">&quot;0123456789&quot;</span></span><br><span class="line"><span class="keyword">var</span> str2 = <span class="string">&quot;0123456789ABCDEF&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>答：首先我们要知道堆栈在内存中的分配。</p>
+<img src="/Users/yinxiangkai/Desktop/Germinal/Kai/source/image/2020-12-14/WX20201216-222133@2x.png" alt="WX20201216-222133@2x" style="zoom:40%;margin-left:1px" />
+
+<p>这里我们就用汇编查看str1的内存地址，然后我们用x/2xg (x)命令读取寄存器地址， 得到内存地址 0x3736353433323130 0xea00000000003938，注意看0x3736353433323130 以及 0xea00000000003938 的值，我们打开ASCII码表，查看对照表：</p>
+<img src="/Users/yinxiangkai/Desktop/Germinal/Kai/source/image/2020-12-14/WX20201216-230352@2x.png" alt="WX20201216-230352@2x" style="zoom:40%;margin-left:1px" />
+
+<p>所以这16个内存地址放的直接是这个字符串的内容。至于为什么39 38 大的在后面小的在前面，因为iOS是小端模式，所以是从后面往前读。其中的 0xea a代表是长度 e 代表类型。这里就跟OC里面的tagger pointer 很像。</p>
+<p>然后我们继续用汇编查看str2的内存地址，就会发现这里Swift调用了String.init方法，最后内存分配在代码段，也叫做常量区。</p>
+</li>
+</ul>
+<p>  如果对String进行拼接操作，String变量的存储会发生什么变化？</p>
+  <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">str1.append(<span class="string">&quot;ABCDE&quot;</span>)</span><br><span class="line">str1.append(<span class="string">&quot;F&quot;</span>)</span><br><span class="line"></span><br><span class="line">str2.append(<span class="string">&quot;G&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>  答：如果字符串长度 &lt;= 0xF，字符串内容直接存放在str1变量的内存中，</p>
+<p>  ​        字符串长度 &gt;0xF，字符串内存存在__Text.cstring中即常量区。 字符串的地址值信息存在str2变量的后8个字符中。</p>
+<p>  ​        如果拼接字符串，字符串长度 &lt;= 0xF，字符串内容依然放在str1变量的内存中。而如果字符串长度 &gt; 0xF，那么就会开辟堆空间。堆空间前32字节是一些描述信息，后32个字节是存放真正的内存地址。(<strong>dyld_stub_binder</strong> 符号绑定)</p>
+<p>  ​        </p>
+<h3 id="资源名管理"><a href="#资源名管理" class="headerlink" title="资源名管理"></a>资源名管理</h3><h5 id="方案一"><a href="#方案一" class="headerlink" title="[方案一]"></a>[方案一]</h5><p>以前使用图片的调用方法</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> img = <span class="type">UIImage</span>.<span class="keyword">init</span>(named: <span class="string">&quot;favicon&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> btn = <span class="type">UIButton</span>.<span class="keyword">init</span>(type: .custom)</span><br><span class="line">btn.setTitle(<span class="string">&quot;分享&quot;</span>, <span class="keyword">for</span>: .normal)</span><br></pre></td></tr></table></figure>
+
+<p>它的缺点呢，不好管理，容易错。接下来看下面这种方案</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">R</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">string</span>: <span class="title">String</span> </span>&#123;</span><br><span class="line">        <span class="keyword">case</span> share = <span class="string">&quot;分享&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">image</span>: <span class="title">String</span> </span>&#123;</span><br><span class="line">        <span class="keyword">case</span> favicon</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我定义了个嵌套枚举，case是默认的原始值，然后调用方式就变成了下面这样</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> img2 = <span class="type">UIImage</span>.<span class="keyword">init</span>(named: <span class="type">R</span>.image.favicon.rawValue)</span><br><span class="line"><span class="keyword">let</span> btn2 = <span class="type">UIButton</span>.<span class="keyword">init</span>(type: .custom)</span><br><span class="line">btn2.setTitle(<span class="type">R</span>.string.share.rawValue, <span class="keyword">for</span>: .normal)</span><br></pre></td></tr></table></figure>
+
+<p>但是每个都要写rawvalue，就很不爽，也不够简洁，所以我们可以这样：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIImage</span> </span>&#123;</span><br><span class="line">    <span class="keyword">convenience</span> <span class="keyword">init</span>?(<span class="number">_</span> named: <span class="type">R</span>.image) &#123;</span><br><span class="line">        <span class="keyword">self</span>.<span class="keyword">init</span>(named:named.rawValue)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIButton</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">setTitle</span><span class="params">(<span class="number">_</span> title:R.string, <span class="keyword">for</span> state:UIControl.State)</span></span> &#123;</span><br><span class="line">        setTitle(title.rawValue, <span class="keyword">for</span>: state)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>分别给UIImage和UIButton添加分类，这样调用就变成了这样。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> img3 = <span class="type">UIImage</span>.<span class="keyword">init</span>(<span class="type">R</span>.image.favicon)</span><br><span class="line"><span class="keyword">let</span> btn3 = <span class="type">UIButton</span>.<span class="keyword">init</span>(type: .custom)</span><br><span class="line">btn3.setTitle(<span class="type">R</span>.string.share, <span class="keyword">for</span>: .normal)</span><br></pre></td></tr></table></figure>
+
+<p>这样看起来就简洁的多了。</p>
+<h5 id="方案二"><a href="#方案二" class="headerlink" title="[方案二]"></a>[方案二]</h5><p>还有资源名管理的其他思路，比如我们想更简洁一点，像下面这样，</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> img4 = <span class="type">UIImage</span>(named: <span class="string">&quot;favicon&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> font4 = <span class="type">UIFont</span>(name: <span class="string">&quot;Arial&quot;</span>, size: <span class="number">14</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> img5 = <span class="type">R</span>.image.favicon</span><br><span class="line"><span class="keyword">let</span> font5 = <span class="type">R</span>.font.arial(<span class="number">14</span>)</span><br></pre></td></tr></table></figure>
+
+<p>其实和刚才的方法是大同小异，我们的R类就可以修改下：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">R</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">image</span> </span>&#123;</span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">var</span> favicon = <span class="type">UIImage</span>(named: <span class="string">&quot;favicon&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">enum</span> <span class="title">font</span> </span>&#123;</span><br><span class="line">        <span class="keyword">static</span> <span class="function"><span class="keyword">func</span> <span class="title">arial</span><span class="params">(<span class="number">_</span> size: CGFloat)</span></span> -&gt; <span class="type">UIFont?</span> &#123;</span><br><span class="line">            <span class="type">UIFont</span>(name: <span class="string">&quot;Arial&quot;</span>, size: size)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样就可以更简洁的调用了，可以参考更优秀的开源框架R.swift和SwiftGen。</p>
+<h3 id="关于Array的思考"><a href="#关于Array的思考" class="headerlink" title="关于Array的思考"></a>关于Array的思考</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span><br></pre></td></tr></table></figure>
+
+<p>我们通过arr这个变量来探讨Array的内存。</p>
+<h5 id="1个Array变量占用多少内存？"><a href="#1个Array变量占用多少内存？" class="headerlink" title="1个Array变量占用多少内存？"></a>1个Array变量占用多少内存？</h5><img src="/Users/yinxiangkai/Desktop/Germinal/Kai/source/image/2020-12-14/WX20201217-225026@2x.png" alt="WX20201217-225026@2x" style="zoom:40%;margin-left:0" />
+
+<p>通过读取arr的内存地址，获取地址信息</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(lldb) register read rax</span><br><span class="line">     rax = <span class="number">0x0000000100512180</span></span><br><span class="line">(lldb) x/10xg <span class="number">0x0000000100512180</span></span><br><span class="line"><span class="number">0x100512180</span>: <span class="number">0x00007fff992ec4d8</span> <span class="number">0x0000000000000002</span></span><br><span class="line"><span class="number">0x100512190</span>: <span class="number">0x0000000000000004</span> <span class="number">0x0000000000000008</span></span><br><span class="line"><span class="number">0x1005121a0</span>: <span class="number">0x0000000000000001</span> <span class="number">0x0000000000000002</span></span><br><span class="line"><span class="number">0x1005121b0</span>: <span class="number">0x0000000000000003</span> <span class="number">0x0000000000000004</span></span><br><span class="line"><span class="number">0x1005121c0</span>: <span class="number">0x0000000000000000</span> <span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure>
+
+<p>其中，0x00007fff992ec4d8 可能是类型信息，0x0000000000000002是引用计数，0x0000000000000004数组的长度，0x0000000000000008数组的容量，所以前16个字节是存储的数组的信息，后面才是元素的内存地址。</p>
+<h5 id="数组中的数据存放在什么地方？"><a href="#数组中的数据存放在什么地方？" class="headerlink" title="数组中的数据存放在什么地方？"></a>数组中的数据存放在什么地方？</h5><p>堆空间</p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/mac-cain13/R.swift">R.Swift</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/SwiftGen/SwiftGen">SwiftGen</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ascii-code.com/">ascii-code</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903477861171207">Swift 对象内存模型探究</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/c91fdc7f3dac">iOS R.Swift原理浅析</a></p>
+
+        <p class="suffix-end">__END__</p>
+        <div class="suffix-box">
+            <div class="suffix-box-left">
+                <img src="../../../../../image/head.png" alt="思维殿堂">
+            </div>
+            <div class="suffix-box-right">
+                <span class="suffix-box-title">文章作者</span>：思维殿堂
+                <br>
+                <span class="suffix-box-title">文章出处</span>：<a href="/2020/12/16/Swift/2020-12-14/" target="_blank"></a>
+                <br>
+                <span class="suffix-box-title">作者签名</span>：所有伟大的事情都源于梦想，始于微不足道.
+                <br>
+                <span class="suffix-box-title">关于主题</span>：<a href="https://github.com/first19326/Hexo-LiveForCode" target="_blank">Hexo - Live For Code</a>
+                <br>
+                <span class="suffix-box-title">版权声明</span>：文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="BY-NC-SA" target="_blank">BY-NC-SA</a> 许可协议，转载请注明出处
+                <br>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+    <div class="article-footer">
+        
+        
+        <div class="article-prev-next">
+            
+            
+                <a href="/2020/11/10/Swift/2020-11-10/" class="next-prefix">» </a> 下一篇：    <a href="/2020/11/10/Swift/2020-11-10/" title="发布于 2020-11-10 12:00">Swift Tips 与 字符串操作</a>
+            
+        </div>
+    </div>
+    
+    <div class="article-comments">
+        <div class="comments-title">
+            评论列表
+        </div>
+        <div class="comments-content">
+        </div>
+    </div>
+
+</div>
+
+    </div>
+</div>
+    <div id="footer"></div>
+    <div id="sidebar">
+    <div class="menu-wrap" style="display:none;">
+        <nav class="menu">
+            <div class="menu-introduce"> 
+                <div class="introduce-avatar"></div> 
+                <div class="introduce-info"> 
+                    <div class="introduce-user"><span></span></div>        
+                </div> 
+            </div> 
+            <div class="menu-list">
+                <ul></ul> 
+            </div> 
+            <div class="menu-link"></div> 
+        </nav>
+        <button class="menu-button-close"></button>
+        <div class="morph-shape" id="morph-shape" data-morph-open="M-7.312,0H15c0,0,66,113.339,66,399.5C81,664.006,15,800,15,800H-7.312V0z;M-7.312,0H100c0,0,0,113.839,0,400c0,264.506,0,400,0,400H-7.312V0z">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 800" preserveAspectRatio="none">
+                <path d="M-7.312,0H0c0,0,0,113.839,0,400c0,264.506,0,400,0,400h-7.312V0z"/>
+            </svg>
+        </div>
+    </div>
+    <button class="menu-button-open">MENU</button>
+    <div class="menu-cover"></div>
+</div>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js"></script>
+<div class="search-window">
+    <div class="search-content">
+        <div class="search-content-icon">
+            <i class="iconfont icon-search"></i>
+        </div>
+        <div id="search-input" class="search-input"></div>
+    </div>
+
+    <div class="search-scroll">
+        <div class="search-result">
+            <div id="search-stats" class="search-stats"></div>
+            <div id="search-hits"></div>
+            <div id="search-pagination" class="search-pagination"></div>
+        </div>
+    </div>
+
+    <span class="search-close-icon">
+        <i class="iconfont icon-close"></i>
+    </span>
+</div>
+    <div id="tools">
+    <div class="progressbar-top"></div>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js"></script>
+    <meting-js id="3778678" lrcshow="false" server="netease" type="playlist" fixed="true" autoplay="false" loop="all" order="random" preload="auto" volume="0.67" mutex="true"></meting-js>
+    <div class="wrap-right"></div>
+    <div class="loading"></div>
+</div>
+    <script>
+    window.config = {
+        GitHubUserName     : 'kaikaka',
+        GitHubRepositories : 'Hexo-LiveForCode',
+
+        BlogUser      : '思维殿堂',
+        BlogAvatar    : '../../../../../image/head.png',
+        BlogStartDate : '2020-10-24',
+
+        WebsiteTitleBlur         : 'Hi, 林江仙',
+        WebsiteTitleBlurTimeOut  : 500,
+        WebsiteTitleFocus        : '(*´∇｀*) 欢迎回来!',
+        WebsiteTitleFocusTimeOut : 1000,
+        WebsiteFavicon           : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/website/logo.png',
+
+        ProgressBar: {
+            id       : 'topProgressBar',
+            color    : '#77B6FF',
+            height   : '2px',
+            duration : 0.2
+        },
+
+        Loading: {
+            rebound: {
+                tension  : 16,
+                friction : 5
+            },
+            spinner: {
+                id     : 'spinner',
+                radius : 90,
+                sides  : 3,
+                depth  : 4,
+                colors : {
+                    background : '#F0F0F0',
+                    stroke     : '#272633',
+                    base       : '',
+                    child      : '#272633'
+                },
+                alwaysForward : true,
+                restAt        : 0.5,
+                renderBase    : false
+            }
+        },
+
+        HomeHeaderAnimationRendered : true,
+        HomeHeaderAnimation         : {
+            radius      : 15,
+            density     : 0.2,
+            color       : 'rgba(255, 255, 255, .2)',
+            clearOffset : 0.3
+        },
+
+        ArticleHeaderAnimationRendered : false,
+        ArticleHeaderAnimation         : {
+            triW                  : 14,
+            triH                  : 20,
+            neighbours            : [
+                
+                    'side',
+                
+                    'top',
+                
+                    'bottom',
+                
+            ],
+            speedTrailAppear      : 0.1,
+            speedTrailDisappear   : 0.1,
+            speedTriOpen          : 1,
+            trailMaxLength        : 30,
+            trailIntervalCreation : 100,
+            delayBeforeDisappear  : 2,
+            colors                : [
+                
+                    '#96EDA6',
+                
+                    '#5BC6A9',
+                
+                    '#38668C',
+                
+                    '#374D84',
+                
+                    '#BED5CB',
+                
+                    '#62ADC6',
+                
+                    '#8EE5DE',
+                
+                    '#304E7B',
+                
+            ]
+        },
+
+        BackAnimationRendered          : true,
+        IEBrowserBackAnimationRendered : false,
+        BackAnimation                  : {
+            colorSaturation  : '60%',
+            colorBrightness  : '50%',
+            colorAlpha       : 0.5,
+            colorCycleSpeed  : 5,
+            verticalPosition : 'random',
+            horizontalSpeed  : 200,
+            ribbonCount      : 3,
+            strokeSize       : 0,
+            parallaxAmount   : -0.2,
+            animateSections  : true
+        },
+
+        HomeHeaderImage : [
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/home.jpg',
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/home.jpeg',
+            
+        ],
+        HomeBannerText  : '',
+
+        ArticleHeaderImage : [
+            
+                'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/header/article.jpg',
+            
+        ],
+
+        OtherBannerText  : '',
+
+        MenuList : [
+            
+                {
+                    name   : '首页',
+                    href   : '/',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '归档',
+                    href   : '/archives',    
+                    target : '',
+                    class  : ''
+                },
+            
+                {
+                    name   : '关于',
+                    href   : '/about',    
+                    target : '',
+                    class  : ''
+                },
+            
+        ],
+        MenuLink : [
+            
+                {
+                    icon : 'icon-wechat', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-qq', 
+                    url  : ''
+                },
+            
+                {
+                    icon : 'icon-github', 
+                    url  : 'https://github.com/kaikaka'
+                },
+            
+        ],
+
+        FooterStyle : 2,
+        BottomText  : {
+            icon    : 'like-fill',
+            left    : '思维殿堂',
+            right   : '所有伟大的事情都源于梦想,始于微不足道.'
+        },
+        ThemeInfo   : false,
+
+        ConsoleList : [
+            
+                [
+                    
+                        'Based on cnblogs theme SimpleMemory.',
+                    
+                        '',
+                    
+                ],
+            
+                [
+                    
+                        'SimpleMemory Author:',
+                    
+                        'BNDong',
+                    
+                ],
+            
+                [
+                    
+                        'Theme:',
+                    
+                        'LiveForCode',
+                    
+                ],
+            
+        ],
+
+        FontIconExtend : "",
+
+        Donate : {
+            paypal  : '',
+            bitcoin : '',
+            alipay  : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/alipay.png',
+            wechat  : 'https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/donate/wechat.png'
+        },
+
+        Code : {
+            style : 'normal'
+        },  
+
+        Search : {
+            applicationID : '010C3EANT8',
+            apiKey        : 'c7abab9f11b79102b9aff7fe6d41447d',
+            indexName     : 'Notes',
+            hits          : {
+                page : 10
+            },
+            labels        : {
+                placeholder : '搜索',
+                empty       : '未发现与 「${query}」 相关的内容',
+                stats       : '${hits} 条相关条目，使用了 ${time} 毫秒',
+            }
+        }, 
+
+        Valine : {
+            switch         : true,
+            el             : '.comments-content',
+            appId          : 'srhKtvWPQTWYKh3qX8G8M7v0-gzGzoHsz',
+            appKey         : '8uVSP1q6UlALVC5igYfIfv2h',
+            placeholder    : '你是我一生只会遇见一次的惊喜...',
+            avatar         : 'mm',
+            meta           : 'nick,mail,link',
+            requiredFields : 'nick,mail',
+            pageSize       : 5,
+            lang           : 'zh-cn',
+            visitor        : true,
+            enableQQ       : true
+        },
+
+        Tocbot : {
+            switch                : true,
+            tocSelector           : '.toc',
+            contentSelector       : '.article-body',
+            headingSelector       : 'h1, h2, h3, h4, h5',
+            headingsOffset        : 0,
+            scrollSmooth          : true,
+            scrollSmoothOffset    : -5,
+            positionFixedSelector : '.toc',
+            positionFixedClass    : 'toc-fixed',
+            fixedSidebarOffset    : '',
+        },
+
+        Require : {
+            baseUrl     : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/",
+            waitSeconds : 100
+        },
+
+        Meting : {
+            id       : "3778678", 
+            lrcshow  : false, 
+            server   : "netease", 
+            type     : "playlist", 
+            fixed    : true, 
+            autoplay : false, 
+            loop     : "all", 
+            order    : "random", 
+            preload  : "auto", 
+            volume   : 0.67, 
+            mutex    : true
+        },
+
+        LazyLoad : {
+            default : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/image/website/lazyload.svg"
+        },
+  
+
+        Style : {
+            aplayer          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/APlayer.css",
+            archive          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/archive.css",
+            donate           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/donate.css",
+            fancybox         : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/jquery.fancybox.css",
+            footer           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/footer.css",
+            iconfont         : "https://at.alicdn.com/t/font_1546312_l3yohatebw.css",
+            index            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/index.css",
+            menuBubble       : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/menu-bubble.css",
+            page             : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/page.css",
+            post             : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/post.css",
+            search           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/search.css",
+            tocbot           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/tocbot.css",
+            normal           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/normal.css",
+            night            : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/night.css",
+            clipboard        : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/css/clipboard.css"
+        },
+
+        Script: {
+            aplayer          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/APlayer.min.js",
+            config           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.config.js",
+            index            : "../../../../../image/index.js",
+            instantSearch    : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/instantsearch.min.js",
+            jQuery           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/jquery-3.4.1.min.js",
+            loading          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/loading.js",
+            meting           : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/Meting.min.js",
+            iscroll          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/iscroll.js",
+            require          : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/js/require.min.js"
+        },
+
+        Font: {
+            LongCang   : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/LongCang.css",
+            Monda      : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Monda.css",
+            NotoSansSC : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/NotoSansSC.css",
+            Playball   : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Playball.css",
+            PTMono     : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/PTMono.css",
+            RobotoSlab : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/RobotoSlab.css",
+            Rosario    : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/Rosario.css",
+            UbuntuMono : "https://cdn.jsdelivr.net/gh/first19326/hexo-liveforcode@master/static/font/UbuntuMono.css"
+        },
+
+        Suffix : {
+            about : '所有伟大的事情都源于梦想，始于微不足道.'
+        },
+            
+        Theme : {
+            url  : 'https://github.com/first19326/Hexo-LiveForCode',
+            name : 'Hexo - Live For Code'
+        }  
+    };
+</script>
+    <script type="text/javascript" src="../../../../../image/index.js"></script>
+</body>
+</html>
