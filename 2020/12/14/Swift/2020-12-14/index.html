@@ -68,7 +68,7 @@
 <p>也就是说一旦桥接完毕后，就是两个不同的东西。</p>
 <h2 id="比较字符串内容是否等价"><a href="#比较字符串内容是否等价" class="headerlink" title="比较字符串内容是否等价"></a>比较字符串内容是否等价</h2><p>​    String 使用 == 运算符</p>
 <p>​    NSString使用isEqual方法，也可以使用== 运算符，本质上还是调用isEqual方法，如下</p>
-<img src="/Users/yinxiangkai/Desktop/Germinal/Kai/public/image/2020-12-14/WX20201214-224936@2x.png" style="zoom:50%;margin:5px" />
+<img src="../../../../../image/2020-12-14/WX20201214-224936@2x.png" style="zoom:50%;margin:5px" />
 
 
 
@@ -79,7 +79,7 @@
 <p>可以得出 (这里的桥接转换是as 而不是init)</p>
 <p>1.String 与NSString 可以互相桥接转换</p>
 <p>2.String 不能桥接转换成NSMutableString</p>
-<img src="/Users/yinxiangkai/Desktop/Germinal/Kai/public/image/2020-12-14/WX20201214-231528@2x.png" style="zoom:40%;margin-left:1px" />
+<img src="../../../../../image/2020-12-14/WX20201214-231528@2x.png" style="zoom:40%;margin-left:1px" />
 
 
 
@@ -89,10 +89,10 @@
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str1 = <span class="string">&quot;0123456789&quot;</span></span><br><span class="line"><span class="keyword">var</span> str2 = <span class="string">&quot;0123456789ABCDEF&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>答：首先我们要知道堆栈在内存中的分配。</p>
-<img src="/Users/yinxiangkai/Desktop/Germinal/Kai/public/image/2020-12-14/WX20201216-222133@2x.png" alt="WX20201216-222133@2x" style="zoom:40%;margin-left:1px" />
+<img src="../../../../../image/2020-12-14/WX20201216-222133@2x.png" alt="WX20201216-222133@2x" style="zoom:40%;margin-left:1px" />
 
 <p>这里我们就用汇编查看str1的内存地址，然后我们用x/2xg (x)命令读取寄存器地址， 得到内存地址 0x3736353433323130 0xea00000000003938，注意看0x3736353433323130 以及 0xea00000000003938 的值，我们打开ASCII码表，查看对照表：</p>
-<img src="/Users/yinxiangkai/Desktop/Germinal/Kai/public/image/2020-12-14/WX20201216-230352@2x.png" alt="WX20201216-230352@2x" style="zoom:40%;margin-left:1px" />
+<img src="../../../../../image/2020-12-14/WX20201216-230352@2x.png" alt="WX20201216-230352@2x" style="zoom:40%;margin-left:1px" />
 
 <p>所以这16个内存地址放的直接是这个字符串的内容。至于为什么39 38 大的在后面小的在前面，因为iOS是小端模式，所以是从后面往前读。其中的 0xea a代表是长度 e 代表类型。这里就跟OC里面的tagger pointer 很像。</p>
 <p>然后我们继续用汇编查看str2的内存地址，就会发现这里Swift调用了String.init方法，最后内存分配在代码段，也叫做常量区。</p>
@@ -131,7 +131,7 @@
 <h1 id="关于Array的思考"><a href="#关于Array的思考" class="headerlink" title="关于Array的思考"></a>关于Array的思考</h1><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span><br></pre></td></tr></table></figure>
 
 <p>我们通过arr这个变量来探讨Array的内存。</p>
-<h2 id="1个Array变量占用多少内存？"><a href="#1个Array变量占用多少内存？" class="headerlink" title="1个Array变量占用多少内存？"></a>1个Array变量占用多少内存？</h2><img src="/Users/yinxiangkai/Desktop/Germinal/Kai/public/image/2020-12-14/WX20201217-225026@2x.png" alt="WX20201217-225026@2x" style="zoom:40%;margin-left:0" />
+<h2 id="1个Array变量占用多少内存？"><a href="#1个Array变量占用多少内存？" class="headerlink" title="1个Array变量占用多少内存？"></a>1个Array变量占用多少内存？</h2><img src="../../../../../image/2020-12-14/WX20201217-225026@2x.png" alt="WX20201217-225026@2x" style="zoom:40%;margin-left:0" />
 
 <p>通过读取arr的内存地址，获取地址信息</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(lldb) register read rax</span><br><span class="line">     rax = <span class="number">0x0000000100512180</span></span><br><span class="line">(lldb) x/10xg <span class="number">0x0000000100512180</span></span><br><span class="line"><span class="number">0x100512180</span>: <span class="number">0x00007fff992ec4d8</span> <span class="number">0x0000000000000002</span></span><br><span class="line"><span class="number">0x100512190</span>: <span class="number">0x0000000000000004</span> <span class="number">0x0000000000000008</span></span><br><span class="line"><span class="number">0x1005121a0</span>: <span class="number">0x0000000000000001</span> <span class="number">0x0000000000000002</span></span><br><span class="line"><span class="number">0x1005121b0</span>: <span class="number">0x0000000000000003</span> <span class="number">0x0000000000000004</span></span><br><span class="line"><span class="number">0x1005121c0</span>: <span class="number">0x0000000000000000</span> <span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure>
